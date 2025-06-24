@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:background="@color/white"
+android:padding="24dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/linearComponent">
+
+        <ImageView
+            android:id="@+id/logoImage"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/logo" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <TextView
+                android:id="@+id/appTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/acronym_upper"
+                android:textSize="35sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.3"
+                android:textColor="@color/red_brown"
+                android:gravity="center"/>
+        </RelativeLayout>
+    </LinearLayout>
+    <!-- Subtítulo -->
+    <TextView
+        android:id="@+id/appSubtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/linearComponent"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:text="@string/lab_name"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="#B79B2E" />
+
+<!-- Campo de Login -->
+<EditText
+    android:id="@+id/inputLogin"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:layout_below="@id/linearComponent"
+    android:layout_marginTop="150dp"
+    android:backgroundTint="#B79B2E"
+    android:hint="@string/email"
+    android:textColorHint="@color/gray"
+    android:padding="12dp" />
+
+<!-- Campo de Senha -->
+<EditText
+    android:id="@+id/inputSenha"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:layout_below="@id/inputLogin"
+    android:layout_marginTop="16dp"
+    android:backgroundTint="#B79B2E"
+    android:hint="@string/password"
+    android:textColorHint="@color/gray"
+    android:padding="12dp"
+    android:inputType="textPassword" />
+
+<!-- Esqueci a Senha -->
+<TextView
+    android:id="@+id/forgotPassword"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/inputSenha"
+    android:layout_centerHorizontal="true"
+    android:layout_marginTop="8dp"
+    android:text="@string/forgot_password"
+    android:textAllCaps="true"
+    android:clickable="true"
+    android:textSize="14sp"
+    android:textColor="#872D2D"
+    android:textStyle="bold" />
+
+<!-- Botão Entrar -->
+<Button
+    android:id="@+id/btnEntrar"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:layout_below="@id/forgotPassword"
+    android:layout_marginTop="32dp"
+    android:text="@string/singin"
+    android:textAllCaps="true"
+    android:textStyle="bold"
+    android:textColor="@color/black"
+    android:backgroundTint="#B79B2E" />
+
+<!-- Botão Cadastrar -->
+<TextView
+    android:id="@+id/btnCadastrar"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/btnEntrar"
+    android:layout_centerHorizontal="true"
+    android:layout_marginTop="16dp"
+    android:text="@string/register"
+    android:textAllCaps="true"
+    android:clickable="true"
+    android:textColor="@color/red_brown"
+    android:textStyle="bold"
+    android:textSize="16sp"
+    android:onClick="clickRegister"
+    />
+
+</RelativeLayout>

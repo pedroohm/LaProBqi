@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:padding="24dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/linearComponent">
+
+        <ImageView
+            android:id="@+id/miniLogo"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/logo" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <TextView
+                android:id="@+id/registerTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/register"
+                android:textAllCaps="true"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.3"
+                android:textColor="@color/red_brown"
+                android:gravity="center"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/nameRegisterView"
+        android:text="@string/user_name"
+        android:layout_below="@id/linearComponent"
+        android:textColor="@color/red_brown"
+        android:textAllCaps="true"
+        android:layout_marginTop="50dp"
+        android:textStyle="bold"
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/nameRegisterInput"
+        android:layout_below="@id/nameRegisterView"
+        android:inputType="text"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/emailRegisterView"
+        android:text="@string/email"
+        android:layout_below="@id/nameRegisterInput"
+        android:textColor="@color/red_brown"
+        android:textAllCaps="true"
+        android:layout_marginTop="10dp"
+        android:textStyle="bold"
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/emailRegisterInput"
+        android:layout_below="@id/emailRegisterView"
+        android:inputType="textEmailAddress"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/numberRegisterView"
+        android:text="@string/registration_number"
+        android:layout_below="@id/emailRegisterInput"
+        android:textColor="@color/red_brown"
+        android:textAllCaps="true"
+        android:layout_marginTop="10dp"
+        android:textStyle="bold"
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/numberRegisterInput"
+        android:layout_below="@id/numberRegisterView"
+        android:inputType="number"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/passwordRegisterView"
+        android:text="@string/password"
+        android:layout_below="@id/numberRegisterInput"
+        android:textColor="@color/red_brown"
+        android:textAllCaps="true"
+        android:layout_marginTop="10dp"
+        android:textStyle="bold"
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/passwordRegisterInput"
+        android:layout_below="@id/passwordRegisterView"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/passwordConfirmRegisterView"
+        android:text="@string/password_confirm"
+        android:layout_below="@id/passwordRegisterInput"
+        android:textColor="@color/red_brown"
+        android:textAllCaps="true"
+        android:layout_marginTop="10dp"
+        android:textStyle="bold"
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/passwordConfirmRegisterInput"
+        android:layout_below="@id/passwordConfirmRegisterView"
+        />
+
+    <Button
+        android:id="@+id/btnEntrar"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_below="@id/passwordConfirmRegisterInput"
+        android:layout_marginTop="32dp"
+        android:text="@string/register"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:backgroundTint="@color/moustard_gold" />
+
+
+
+
+</RelativeLayout>

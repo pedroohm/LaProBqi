@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:padding="24dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/linearComponent">
+
+        <ImageView
+            android:id="@+id/miniLogo"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/logo" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <ImageView
+                android:id="@+id/configLogo"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:textAllCaps="true"
+                android:src="@drawable/config"
+                android:gravity="left"
+                android:layout_alignParentRight="true"
+                />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <Button
+        android:layout_width="155sp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30sp"
+        android:id="@+id/btnCheckInOut"
+        android:layout_below="@id/linearComponent"
+        android:layout_alignParentLeft="true"
+        android:layout_gravity="left|center_vertical"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/moustard_gold"
+        android:text="@string/check_in_out"
+        />
+
+    <Button
+        android:layout_width="155sp"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnPops"
+        android:layout_below="@id/btnCheckInOut"
+        android:layout_alignParentRight="true"
+        android:text="@string/pops_and_guides"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/moustard_gold"
+        />
+
+    <Button
+        android:layout_width="155sp"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnWarehouse"
+        android:layout_below="@id/btnPops"
+        android:layout_alignParentLeft="true"
+        android:text="@string/warehouse"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/moustard_gold"
+        />
+    <Button
+        android:layout_width="155sp"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnProjectManagement"
+        android:layout_below="@id/btnWarehouse"
+        android:layout_alignParentRight="true"
+        android:text="@string/project_management"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/moustard_gold"
+        />
+    <Button
+        android:layout_width="155sp"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnScheduleEquip"
+        android:layout_below="@id/btnProjectManagement"
+        android:layout_alignParentLeft="true"
+        android:text="@string/schedule_equip"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/moustard_gold"
+        />
+    <Button
+        android:layout_width="155sp"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnPoinst"
+        android:layout_below="@id/btnScheduleEquip"
+        android:layout_alignParentRight="true"
+        android:text="@string/poinst"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/moustard_gold"
+        />
+    <Button
+        android:layout_width="155sp"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnUseEquipmentLogs"
+        android:layout_below="@id/btnPoinst"
+        android:layout_alignParentLeft="true"
+        android:text="@string/use_equipment_logs"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/moustard_gold"
+        />
+    <Button
+        android:layout_width="155sp"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnChallenge"
+        android:layout_below="@id/btnUseEquipmentLogs"
+        android:layout_alignParentRight="true"
+        android:text="@string/challenge"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/moustard_gold"
+        />
+
+
+</RelativeLayout>

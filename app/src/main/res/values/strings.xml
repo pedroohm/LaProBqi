@@ -1,3 +1,38 @@
 <resources>
+    <!--Login and Register screen-->
     <string name="app_name">LaProBqi</string>
+    <string name="lab_name">Laboratório de Processos Bioquímicos e Fermentativos</string>
+    <string name="acronym_upper">LAPROBQI</string>
+    <string name="university_name">Universidade Federal de Viçosa</string>
+    <string name="forgot_password">Esqueci a senha</string>
+    <string name="email">E-mail</string>
+    <string name="password">Senha</string>
+    <string name="password_confirm">Confirme sua senha</string>
+    <string name="singin">Entrar</string>
+    <string name="register">Cadastrar</string>
+    <string name="user_name">Nome</string>
+    <string name="registration_number">Matricula</string>
+
+    <!--Settings screen-->
+    <string name="language">Idioma</string>
+    <string name="change_password">Alterar senha</string>
+    
+    <!--Initial Menu screen-->
+    <string name="check_in_out">CHECK IN&#10;CHECK OUT</string>"
+    <string name="pops_and_guides">POPS E&#10;MANUAIS</string>
+    <string name="warehouse">ALMOXARIFADO</string>
+    <string name="project_management">GESTÃO DE&#10;PROJETOS</string>
+    <string name="schedule_equip">AGENDAR&#10;EQUIPAMENTOS</string>
+    <string name="poinst">PONTUAÇÃO</string>
+    <string name="use_equipment_logs">CONTROLE DE&#10;USO DE&#10;EQUIPAMENTOS</string>
+    <string name="challenge">DESAFIO&#10;LAPROBQI</string>
+
+    <!-- CHECKIN CHECKOUT SCREEN -->
+    <string name="chekin">CHECK IN</string>
+    <string name="chekout">CHECK OUT</string>
+    <string name="your_activity">SUA ATIVIDADE</string>
+
+
+
+
 </resources>
