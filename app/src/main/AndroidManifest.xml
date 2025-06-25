@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <application
+        android:name=".MyApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -12,6 +13,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LaProBqi"
         tools:targetApi="31">
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AlertActivity"
+            android:exported="false" />
+        <activity
+            android:name=".StockActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CatalogActivity"
+            android:exported="false" />
+        <activity
+            android:name=".WarehouseActivity"
+            android:exported="false" />
         <activity
             android:name=".InitialMenuActivity"
             android:exported="false" />

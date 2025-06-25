@@ -8,55 +8,87 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class RegisterActivity extends Activity {
+
+    private EditText nameInput;
+    private EditText emailInput;
+    private EditText numberInput;
+    private EditText passwordInput;
+    private EditText passwordConfirmInput;
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        initializeViews();
+        prefs = getSharedPreferences("users", MODE_PRIVATE);
     }
 
-    public void clickRegister(View v){
-        EditText nameInput = findViewById(R.id.nameRegisterInput);
-        EditText emailInput = findViewById(R.id.emailRegisterInput);
-        EditText numberInput = findViewById(R.id.numberRegisterInput);
-        EditText passwordInput = findViewById(R.id.passwordRegisterInput);
-        EditText passwordConfirmInput = findViewById(R.id.passwordConfirmRegisterInput);
-        
-        String name = nameInput.getText().toString();
-        String email = emailInput.getText().toString();
-        String number = numberInput.getText().toString();
+    private void initializeViews() {
+        nameInput = findViewById(R.id.nameRegisterInput);
+        emailInput = findViewById(R.id.emailRegisterInput);
+        numberInput = findViewById(R.id.numberRegisterInput);
+        passwordInput = findViewById(R.id.passwordRegisterInput);
+        passwordConfirmInput = findViewById(R.id.passwordConfirmRegisterInput);
+    }
+
+    public void clickRegister(View view) {
+        String name = nameInput.getText().toString().trim();
+        String email = emailInput.getText().toString().trim();
+        String number = numberInput.getText().toString().trim();
         String password = passwordInput.getText().toString();
         String passwordConfirm = passwordConfirmInput.getText().toString();
-        
-        // Validação básica
-        if (password.equals(passwordConfirm)) {
-            try {
-                JSONObject userData = new JSONObject();
-                userData.put("name", name);
-                userData.put("email", email);
-                userData.put("number", number);
-                userData.put("password", password);
-                
-                SharedPreferences prefs = getSharedPreferences("users", MODE_PRIVATE);
-                prefs.edit().putString(email, userData.toString()).apply();
-                
-                Toast.makeText(this, "Usuário registrado com sucesso!", Toast.LENGTH_SHORT).show();
-                Intent it = new Intent(this, LoginActivity.class);
-                startActivity(it);
-            } catch (Exception e) {
-                Toast.makeText(this, "Erro ao registrar usuário!", Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            Toast.makeText(this, "Senhas não coincidem!", Toast.LENGTH_SHORT).show();
+
+        if (!validateInputs(name, email, number, password, passwordConfirm)) return;
+
+        try {
+            JSONObject userData = new JSONObject();
+            userData.put("name", name);
+            userData.put("email", email);
+            userData.put("number", number);
+            userData.put("password", password);
+
+            prefs.edit().putString(email, userData.toString()).apply();
+
+            showToast("Usuário registrado com sucesso!");
+            navigateToLogin();
+
+        } catch (JSONException e) {
+            showToast("Erro ao registrar usuário!");
         }
+    }
+
+    private boolean validateInputs(String name, String email, String number, String password, String passwordConfirm) {
+        if (name.isEmpty() || email.isEmpty() || number.isEmpty() || password.isEmpty() || passwordConfirm.isEmpty()) {
+            showToast("Preencha todos os campos.");
+            return false;
+        }
+
+        if (!password.equals(passwordConfirm)) {
+            showToast("Senhas não coincidem!");
+            return false;
+        }
+
+        if (prefs.contains(email)) {
+            showToast("Usuário já registrado com esse e-mail.");
+            return false;
+        }
+
+        return true;
+    }
+
+    private void navigateToLogin() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        finish(); // Opcional: fecha tela de registro
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

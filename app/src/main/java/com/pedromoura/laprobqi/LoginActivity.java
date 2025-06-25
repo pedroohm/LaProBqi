@@ -8,55 +8,73 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class LoginActivity extends Activity {
+
+    private EditText emailInput;
+    private EditText passwordInput;
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_screen);
+
+        initializeViews();
+        prefs = getSharedPreferences("users", MODE_PRIVATE);
     }
 
-    public void clickLogin(View v){
-        EditText emailInput = findViewById(R.id.inputLogin);
-        EditText passwordInput = findViewById(R.id.inputSenha);
-        
-        String email = emailInput.getText().toString();
+    private void initializeViews() {
+        emailInput = findViewById(R.id.inputLogin);
+        passwordInput = findViewById(R.id.inputSenha);
+    }
+
+    public void clickLogin(View view) {
+        String email = emailInput.getText().toString().trim();
         String password = passwordInput.getText().toString();
-        
-        SharedPreferences prefs = getSharedPreferences("users", MODE_PRIVATE);
-        
-        // Opção 1: Verificar campo por campo
-        String senhaSalva = prefs.getString(email + "_password", null);
-        
-        // Opção 2: Verificar JSON
+
+        if (email.isEmpty() || password.isEmpty()) {
+            showToast("Preencha todos os campos.");
+            return;
+        }
+
         String userDataString = prefs.getString(email, null);
-        if (userDataString != null) {
-            try {
-                JSONObject userData = new JSONObject(userDataString);
-                String senhaSalva = userData.getString("password");
-                String nome = userData.getString("name");
-                
-                if (senhaSalva.equals(password)) {
-                    Toast.makeText(this, "Bem-vindo, " + nome + "!", Toast.LENGTH_SHORT).show();
-                    Intent it = new Intent(this, InitialMenuActivity.class);
-                    startActivity(it);
-                } else {
-                    Toast.makeText(this, "Senha incorreta!", Toast.LENGTH_SHORT).show();
-                }
-            } catch (Exception e) {
-                Toast.makeText(this, "Erro ao fazer login!", Toast.LENGTH_SHORT).show();
+        if (userDataString == null) {
+            showToast("Usuário não encontrado!");
+            return;
+        }
+
+        try {
+            JSONObject userData = new JSONObject(userDataString);
+            String storedPassword = userData.getString("password");
+            String name = userData.getString("name");
+
+            if (password.equals(storedPassword)) {
+                navigateToInitialMenu(name);
+            } else {
+                showToast("Senha incorreta!");
             }
-        } else {
-            Toast.makeText(this, "Usuário não encontrado!", Toast.LENGTH_SHORT).show();
+
+        } catch (JSONException e) {
+            showToast("Erro ao processar os dados do usuário!");
         }
     }
 
+    private void navigateToInitialMenu(String userName) {
+        showToast("Bem-vindo, " + userName + "!");
+        Intent intent = new Intent(this, InitialMenuActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    public void clickRegister(View view) {
+        Intent intent = new Intent(this, RegisterActivity.class);
+        startActivity(intent);
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
 }

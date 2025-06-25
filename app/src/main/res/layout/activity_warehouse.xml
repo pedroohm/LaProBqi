@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:padding="24dp">
+
+    <!-- Topo com logo e título -->
+    <LinearLayout
+        android:id="@+id/linearComponent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/miniLogo"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/logo" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp">
+
+            <TextView
+                android:id="@+id/warehouseTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginEnd="60dp"
+                android:text="@string/warehouse"
+                android:textAllCaps="true"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.1"
+                android:textColor="@color/red_brown"
+                android:gravity="center" />
+
+            <ImageView
+                android:id="@+id/configLogo"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:src="@drawable/config"
+                android:contentDescription="@string/config" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <!-- Botões na parte inferior central -->
+    <LinearLayout
+        android:id="@+id/buttonContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/linearComponent"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="48dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btnCatalog"
+            android:layout_width="250dp"
+            android:layout_height="60dp"
+            android:text="@string/catalog"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/moustard_gold"
+            android:onClick="clickCatalog"/>
+
+        <Button
+            android:id="@+id/btnAlert"
+            android:layout_width="250dp"
+            android:layout_height="60dp"
+            android:text="@string/alert"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/moustard_gold"
+            android:layout_marginTop="16dp"
+            android:onClick="clickAlert"/>
+
+        <Button
+            android:id="@+id/btnStock"
+            android:layout_width="250dp"
+            android:layout_height="60dp"
+            android:text="@string/stock"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/moustard_gold"
+            android:layout_marginTop="16dp"
+            android:onClick="clickStock"/>
+    </LinearLayout>
+
+</RelativeLayout>

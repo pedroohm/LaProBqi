@@ -29,6 +29,7 @@
                 android:src="@drawable/config"
                 android:gravity="left"
                 android:layout_alignParentRight="true"
+                android:onClick="clickSettings"
                 />
         </RelativeLayout>
     </LinearLayout>
@@ -44,6 +45,7 @@
         android:textColor="@color/white"
         android:backgroundTint="@color/moustard_gold"
         android:text="@string/check_in_out"
+        android:onClick="clickCheckInOut"
         />
 
     <Button
@@ -55,6 +57,7 @@
         android:text="@string/pops_and_guides"
         android:textColor="@color/white"
         android:backgroundTint="@color/moustard_gold"
+        android:onClick="clickPopsAndGuides"
         />
 
     <Button
@@ -66,6 +69,7 @@
         android:text="@string/warehouse"
         android:textColor="@color/white"
         android:backgroundTint="@color/moustard_gold"
+        android:onClick="clickWarehouse"
         />
     <Button
         android:layout_width="155sp"
@@ -86,26 +90,30 @@
         android:text="@string/schedule_equip"
         android:textColor="@color/white"
         android:backgroundTint="@color/moustard_gold"
+        android:onClick="clickScheduleEquip"
         />
     <Button
         android:layout_width="155sp"
         android:layout_height="wrap_content"
-        android:id="@+id/btnPoinst"
+        android:id="@+id/btnPoints"
         android:layout_below="@id/btnScheduleEquip"
         android:layout_alignParentRight="true"
         android:text="@string/poinst"
         android:textColor="@color/white"
         android:backgroundTint="@color/moustard_gold"
+        android:onClick="clickPoints"
         />
     <Button
         android:layout_width="155sp"
         android:layout_height="wrap_content"
         android:id="@+id/btnUseEquipmentLogs"
-        android:layout_below="@id/btnPoinst"
+        android:layout_below="@id/btnPoints"
         android:layout_alignParentLeft="true"
         android:text="@string/use_equipment_logs"
         android:textColor="@color/white"
         android:backgroundTint="@color/moustard_gold"
+        android:enabled="false"
+        android:onClick="clickPoints"
         />
     <Button
         android:layout_width="155sp"
@@ -116,6 +124,7 @@
         android:text="@string/challenge"
         android:textColor="@color/white"
         android:backgroundTint="@color/moustard_gold"
+        android:onClick="clickChallenge"
         />
 
 

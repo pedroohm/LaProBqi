@@ -99,6 +99,7 @@ android:padding="24dp">
     android:textAllCaps="true"
     android:textStyle="bold"
     android:textColor="@color/black"
+    android:onClick="clickLogin"
     android:backgroundTint="#B79B2E" />
 
 <!-- Botão Cadastrar -->

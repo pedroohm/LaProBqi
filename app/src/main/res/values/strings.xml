@@ -13,10 +13,6 @@
     <string name="user_name">Nome</string>
     <string name="registration_number">Matricula</string>
 
-    <!--Settings screen-->
-    <string name="language">Idioma</string>
-    <string name="change_password">Alterar senha</string>
-    
     <!--Initial Menu screen-->
     <string name="check_in_out">CHECK IN&#10;CHECK OUT</string>"
     <string name="pops_and_guides">POPS E&#10;MANUAIS</string>
@@ -27,12 +23,24 @@
     <string name="use_equipment_logs">CONTROLE DE&#10;USO DE&#10;EQUIPAMENTOS</string>
     <string name="challenge">DESAFIO&#10;LAPROBQI</string>
 
+    <!--SETTINGS SCREEN-->
+    <string name="language">Idioma</string>
+    <string name="change_password">Alterar senha</string>
+
     <!-- CHECKIN CHECKOUT SCREEN -->
     <string name="chekin">CHECK IN</string>
     <string name="chekout">CHECK OUT</string>
     <string name="your_activity">SUA ATIVIDADE</string>
 
+    <!-- POP SCREEN -->
 
+    <!-- WAREHOUSE SCREEN -->
+    <string name="catalog">CATÁLOGO</string>
+    <string name="alert">ALERTA</string>
+    <string name="stock">ESTOQUE</string>
+
+    <!-- Description of elements -->
+    <string name="config">Configurações</string>
 
 
 </resources>

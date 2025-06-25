@@ -113,6 +113,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/passwordRegisterInput"
         android:layout_below="@id/passwordRegisterView"
+        android:inputType="textPassword"
         />
 
     <TextView
@@ -132,6 +133,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/passwordConfirmRegisterInput"
         android:layout_below="@id/passwordConfirmRegisterView"
+        android:inputType="textPassword"
         />
 
     <Button
@@ -144,7 +146,8 @@
         android:textAllCaps="true"
         android:textStyle="bold"
         android:textColor="@color/black"
-        android:backgroundTint="@color/moustard_gold" />
+        android:backgroundTint="@color/moustard_gold"
+        android:onClick="clickRegister"/>
 
 
 
