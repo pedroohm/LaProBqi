@@ -1,4 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--Login and Register screen-->
     <string name="app_name">LaProBqi</string>
+    <string name="lab_name">Biochemical and Fermentative Processes Laboratory</string>
+    <string name="acronym_upper">LAPROBQI</string>
+    <string name="university_name">Federal University of Viçosa</string>
+    <string name="forgot_password">Forgot password</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="password_confirm">Confirm password</string>
+    <string name="singin">Sign in</string>
+    <string name="register">Register</string>
+    <string name="user_name">Name</string>
+    <string name="registration_number">Registration number</string>
+
+    <!--Initial Menu screen-->
+    <string name="check_in_out">CHECK IN&#10;CHECK OUT</string>
+    <string name="pops_and_guides">POPS AND&#10;GUIDES</string>
+    <string name="warehouse">WAREHOUSE</string>
+    <string name="project_management">PROJECT&#10;MANAGEMENT</string>
+    <string name="schedule_equip">SCHEDULE&#10;EQUIPMENT</string>
+    <string name="poinst">POINTS</string>
+    <string name="use_equipment_logs">EQUIPMENT&#10;USE LOGS</string>
+    <string name="challenge">LAPROBQI&#10;CHALLENGE</string>
+
+    <!--SETTINGS SCREEN-->
+    <string name="language">Language</string>
+    <string name="change_password">Change password</string>
+
+    <!-- CHECKIN CHECKOUT SCREEN -->
+    <string name="chekin">CHECK IN</string>
+    <string name="chekout">CHECK OUT</string>
+    <string name="your_activity">YOUR ACTIVITY</string>
+
+    <!-- POP SCREEN -->
+
+    <!-- WAREHOUSE SCREEN -->
+    <string name="catalog">CATALOG</string>
+    <string name="alert">ALERT</string>
+    <string name="stock">STOCK</string>
+
+    <!-- Description of elements -->
+    <string name="config">Settings</string>
 </resources>
