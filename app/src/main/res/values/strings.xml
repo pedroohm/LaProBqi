@@ -14,7 +14,7 @@
     <string name="registration_number">Matricula</string>
 
     <!--Initial Menu screen-->
-    <string name="check_in_out">CHECK IN&#10;CHECK OUT</string>"
+    <string name="check_in_out">CHECK IN&#10;CHECK OUT</string>
     <string name="pops_and_guides">POPS E&#10;MANUAIS</string>
     <string name="warehouse">ALMOXARIFADO</string>
     <string name="project_management">GESTÃO DE&#10;PROJETOS</string>
@@ -26,6 +26,9 @@
     <!--SETTINGS SCREEN-->
     <string name="language">Idioma</string>
     <string name="change_password">Alterar senha</string>
+    <string name="save_settings">Salvar Configurações</string>
+    <string name="portuguese">Português (Brasil)</string>
+    <string name="english">English</string>
 
     <!-- CHECKIN CHECKOUT SCREEN -->
     <string name="chekin">CHECK IN</string>
@@ -41,6 +44,5 @@
 
     <!-- Description of elements -->
     <string name="config">Configurações</string>
-
 
 </resources>

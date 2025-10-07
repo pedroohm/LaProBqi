@@ -27,6 +27,9 @@
     <!--SETTINGS SCREEN-->
     <string name="language">Language</string>
     <string name="change_password">Change password</string>
+    <string name="save_settings">Save Settings</string>
+    <string name="portuguese">Português (Brasil)</string>
+    <string name="english">English</string>
 
     <!-- CHECKIN CHECKOUT SCREEN -->
     <string name="chekin">CHECK IN</string>
@@ -42,4 +45,5 @@
 
     <!-- Description of elements -->
     <string name="config">Settings</string>
+
 </resources>

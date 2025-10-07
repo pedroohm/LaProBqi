@@ -13,9 +13,9 @@
         <EditText android:id="@+id/editUnidade" android:hint="Unidade (g, L...)" android:layout_width="match_parent" android:layout_height="wrap_content"/>
         <EditText android:id="@+id/editObs" android:hint="Observações" android:layout_width="match_parent" android:layout_height="wrap_content"/>
 
-        <Button android:id="@+id/btnSalvar" android:text="Salvar Produto" android:layout_width="match_parent" android:layout_height="wrap_content"/>
-        <Button android:id="@+id/btnLimpar" android:text="Limpar Campos" android:layout_width="match_parent" android:layout_height="wrap_content"/>
-        <Button android:id="@+id/btnListar" android:text="Listar Produtos" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+        <Button android:id="@+id/btnSalvar" android:text="Salvar Produto" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/white" android:backgroundTint="@color/moustard_gold"/>
+        <Button android:id="@+id/btnLimpar" android:text="Limpar Campos" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/white" android:backgroundTint="@color/moustard_gold"/>
+        <Button android:id="@+id/btnListar" android:text="Listar Produtos" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/white" android:backgroundTint="@color/moustard_gold"/>
 
         <TextView android:id="@+id/textLista" android:layout_width="match_parent" android:layout_height="wrap_content" android:textSize="16sp" android:paddingTop="20dp"/>
     </LinearLayout>

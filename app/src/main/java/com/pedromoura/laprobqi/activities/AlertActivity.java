@@ -1,14 +1,10 @@
-package com.pedromoura.laprobqi;
+package com.pedromoura.laprobqi.activities;
 
 import android.os.Bundle;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import android.app.Activity;
-import android.app.Activity;
+
+import com.pedromoura.laprobqi.R;
 
 public class AlertActivity extends Activity {
 

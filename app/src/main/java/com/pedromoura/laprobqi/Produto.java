@@ -34,4 +34,5 @@ public class Produto {
     public String getObservacoes() { return observacoes; }
 
     public void setId(int id) { this.id = id; }
+    public void setQuantidade(double quantidade) { this.quantidade = quantidade; }
 }

@@ -1,4 +1,4 @@
-package com.pedromoura.laprobqi;
+package com.pedromoura.laprobqi.activities;
 
 import android.os.Bundle;
 import android.widget.EditText;
@@ -6,6 +6,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.pedromoura.laprobqi.BancoDadosProduto;
+import com.pedromoura.laprobqi.Produto;
+import com.pedromoura.laprobqi.R;
 
 import java.util.List;
 

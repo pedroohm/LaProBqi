@@ -40,12 +40,23 @@
             android:focusable="true"/>
     </LinearLayout>
 
+    <!-- Campo de Pesquisa -->
+    <EditText
+        android:id="@+id/editPesquisa"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_below="@id/headerLayout"
+        android:hint="🔍 Pesquisar por nome..."
+        android:padding="12dp"
+        android:background="@android:drawable/edit_text"
+        android:layout_marginBottom="16dp"/>
+
     <!-- Botão Adicionar Produto -->
     <Button
         android:id="@+id/btnAdicionarProduto"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_below="@id/headerLayout"
+        android:layout_below="@id/editPesquisa"
         android:text="+ ADICIONAR PRODUTO"
         android:textStyle="bold"
         android:backgroundTint="@color/moustard_gold"
