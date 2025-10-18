@@ -1,77 +1,97 @@
 package com.pedromoura.laprobqi.activities;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.pedromoura.laprobqi.R;
+import com.pedromoura.laprobqi.di.RepositoryProvider;
+import com.pedromoura.laprobqi.repository.UsuarioRepository;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+public class LoginActivity extends AppCompatActivity {
 
-public class LoginActivity extends Activity {
-
-    private EditText emailInput;
-    private EditText passwordInput;
-    private SharedPreferences prefs;
+    private EditText editEmail, editPassword;
+    private Button btnLogin;
+    private TextView textRegister;
+    private ProgressBar progressBar;
+    private UsuarioRepository usuarioRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_screen);
 
-        initializeViews();
-        prefs = getSharedPreferences("users", MODE_PRIVATE);
+        // Inicializar repository
+        usuarioRepository = RepositoryProvider.getInstance(this).getUsuarioRepository();
+
+        // Inicializar views
+        editEmail = findViewById(R.id.inputLogin);
+        editPassword = findViewById(R.id.inputSenha);
+        btnLogin = findViewById(R.id.btnEntrar);
+        textRegister = findViewById(R.id.btnCadastrar);
+        progressBar = findViewById(R.id.progress_bar);
+
+        btnLogin.setOnClickListener(v -> fazerLogin());
+        textRegister.setOnClickListener(v -> abrirTelaCadastro());
+
+        // Verificar se já está logado
+        verificarSessao();
     }
 
-    private void initializeViews() {
-        emailInput = findViewById(R.id.inputLogin);
-        passwordInput = findViewById(R.id.inputSenha);
+    private void verificarSessao() {
+        progressBar.setVisibility(View.VISIBLE);
+        usuarioRepository.obterUsuarioAtual(usuario -> {
+            progressBar.setVisibility(View.GONE);
+            if (usuario != null) {
+                navegarParaMenuInicial(usuario.getNome());
+            }
+        });
     }
 
-    public void clickLogin(View view) {
-        String email = emailInput.getText().toString().trim();
-        String password = passwordInput.getText().toString();
+    private void fazerLogin() {
+        String email = editEmail.getText().toString().trim();
+        String password = editPassword.getText().toString().trim();
 
         if (email.isEmpty() || password.isEmpty()) {
-            showToast("Preencha todos os campos.");
+            showToast("Preencha todos os campos");
             return;
         }
 
-        String userDataString = prefs.getString(email, null);
-        if (userDataString == null) {
-            showToast("Usuário não encontrado!");
-            return;
-        }
+        progressBar.setVisibility(View.VISIBLE);
+        btnLogin.setEnabled(false);
 
-        try {
-            JSONObject userData = new JSONObject(userDataString);
-            String storedPassword = userData.getString("password");
-            String name = userData.getString("name");
-
-            if (password.equals(storedPassword)) {
-                navigateToInitialMenu(name);
-            } else {
-                showToast("Senha incorreta!");
+        usuarioRepository.autenticar(email, password, new UsuarioRepository.OnAuthListener() {
+            @Override
+            public void onSuccess(String userId, String nome, String nivelAcesso) {
+                progressBar.setVisibility(View.GONE);
+                btnLogin.setEnabled(true);
+                navegarParaMenuInicial(nome);
             }
 
-        } catch (JSONException e) {
-            showToast("Erro ao processar os dados do usuário!");
-        }
+            @Override
+            public void onFailure(String mensagem) {
+                progressBar.setVisibility(View.GONE);
+                btnLogin.setEnabled(true);
+                showToast(mensagem); // "E-mail ou senha inválidos" (RF01)
+            }
+        });
     }
 
-    private void navigateToInitialMenu(String userName) {
+    private void navegarParaMenuInicial(String userName) {
         showToast("Bem-vindo, " + userName + "!");
         Intent intent = new Intent(this, InitialMenuActivity.class);
         startActivity(intent);
         finish();
     }
 
-    public void clickRegister(View view) {
+    private void abrirTelaCadastro() {
         Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
     }

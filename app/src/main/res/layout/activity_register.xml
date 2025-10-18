@@ -5,10 +5,19 @@
     android:background="@color/white"
     android:padding="24dp">
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/linearComponent">
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:visibility="gone"/>
 
         <ImageView
             android:id="@+id/miniLogo"
@@ -136,18 +145,36 @@
         android:inputType="textPassword"
         />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/nivelAcessoView"
+        android:text="Nível de Acesso"
+        android:layout_below="@id/passwordConfirmRegisterInput"
+        android:textColor="@color/red_brown"
+        android:textAllCaps="true"
+        android:layout_marginTop="10dp"
+        android:textStyle="bold"
+        />
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinnerNivelAcesso"
+        android:layout_below="@id/nivelAcessoView"
+        />
+
     <Button
-        android:id="@+id/btnEntrar"
+        android:id="@+id/btnRegister"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_below="@id/passwordConfirmRegisterInput"
+        android:layout_below="@id/spinnerNivelAcesso"
         android:layout_marginTop="32dp"
         android:text="@string/register"
         android:textAllCaps="true"
         android:textStyle="bold"
         android:textColor="@color/black"
-        android:backgroundTint="@color/moustard_gold"
-        android:onClick="clickRegister"/>
+        android:backgroundTint="@color/moustard_gold"/>
 
 
 

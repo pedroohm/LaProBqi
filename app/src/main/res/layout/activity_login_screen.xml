@@ -1,14 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:background="@color/white"
-android:padding="24dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:padding="24dp">
+
+
 
     <LinearLayout
+        android:id="@+id/linearComponent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/linearComponent">
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:visibility="gone"/>
 
         <ImageView
             android:id="@+id/logoImage"
@@ -17,24 +29,29 @@ android:padding="24dp">
             android:src="@drawable/logo" />
 
         <RelativeLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center">
+            android:layout_weight="1">
 
             <TextView
                 android:id="@+id/appTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
+                android:gravity="center"
+                android:letterSpacing="0.08"
+                android:maxLines="1"
                 android:text="@string/acronym_upper"
+                android:textColor="@color/red_brown"
                 android:textSize="35sp"
                 android:textStyle="bold"
-                android:letterSpacing="0.3"
-                android:textColor="@color/red_brown"
-                android:gravity="center"/>
+                app:autoSizeMaxTextSize="35sp"
+                app:autoSizeMinTextSize="12sp"
+                app:autoSizeStepGranularity="1sp"
+                app:autoSizeTextType="uniform" />
         </RelativeLayout>
     </LinearLayout>
-    <!-- Subtítulo -->
+
     <TextView
         android:id="@+id/appSubtitle"
         android:layout_width="match_parent"
@@ -42,81 +59,75 @@ android:padding="24dp">
         android:layout_below="@id/linearComponent"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="5dp"
-        android:text="@string/lab_name"
-        android:textSize="20sp"
         android:gravity="center"
-        android:textStyle="bold"
-        android:textColor="#B79B2E" />
+        android:text="@string/lab_name"
+        android:textColor="#B79B2E"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
-<!-- Campo de Login -->
-<EditText
-    android:id="@+id/inputLogin"
-    android:layout_width="match_parent"
-    android:layout_height="48dp"
-    android:layout_below="@id/linearComponent"
-    android:layout_marginTop="150dp"
-    android:backgroundTint="#B79B2E"
-    android:hint="@string/email"
-    android:textColorHint="@color/gray"
-    android:padding="12dp" />
+    <EditText
+        android:id="@+id/inputLogin"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_below="@id/linearComponent"
+        android:layout_marginTop="150dp"
+        android:backgroundTint="#B79B2E"
+        android:hint="@string/email"
+        android:padding="12dp"
+        android:textColorHint="@color/gray" />
 
-<!-- Campo de Senha -->
-<EditText
-    android:id="@+id/inputSenha"
-    android:layout_width="match_parent"
-    android:layout_height="48dp"
-    android:layout_below="@id/inputLogin"
-    android:layout_marginTop="16dp"
-    android:backgroundTint="#B79B2E"
-    android:hint="@string/password"
-    android:textColorHint="@color/gray"
-    android:padding="12dp"
-    android:inputType="textPassword" />
+    <EditText
+        android:id="@+id/inputSenha"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_below="@id/inputLogin"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#B79B2E"
+        android:hint="@string/password"
+        android:inputType="textPassword"
+        android:padding="12dp"
+        android:textColorHint="@color/gray" />
 
-<!-- Esqueci a Senha -->
-<TextView
-    android:id="@+id/forgotPassword"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_below="@id/inputSenha"
-    android:layout_centerHorizontal="true"
-    android:layout_marginTop="8dp"
-    android:text="@string/forgot_password"
-    android:textAllCaps="true"
-    android:clickable="true"
-    android:textSize="14sp"
-    android:textColor="#872D2D"
-    android:textStyle="bold" />
+    <Button
+        android:id="@+id/btnEntrar"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_below="@id/inputSenha"
+        android:layout_marginTop="32dp"
+        android:backgroundTint="#B79B2E"
+        android:onClick="clickLogin"
+        android:text="@string/singin"
+        android:textAllCaps="true"
+        android:textColor="@color/black"
+        android:textStyle="bold" />
 
-<!-- Botão Entrar -->
-<Button
-    android:id="@+id/btnEntrar"
-    android:layout_width="match_parent"
-    android:layout_height="48dp"
-    android:layout_below="@id/forgotPassword"
-    android:layout_marginTop="32dp"
-    android:text="@string/singin"
-    android:textAllCaps="true"
-    android:textStyle="bold"
-    android:textColor="@color/black"
-    android:onClick="clickLogin"
-    android:backgroundTint="#B79B2E" />
+    <TextView
+        android:id="@+id/btnCadastrar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnEntrar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:clickable="true"
+        android:onClick="clickRegister"
+        android:text="@string/register"
+        android:textAllCaps="true"
+        android:textColor="@color/red_brown"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
-<!-- Botão Cadastrar -->
-<TextView
-    android:id="@+id/btnCadastrar"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_below="@id/btnEntrar"
-    android:layout_centerHorizontal="true"
-    android:layout_marginTop="16dp"
-    android:text="@string/register"
-    android:textAllCaps="true"
-    android:clickable="true"
-    android:textColor="@color/red_brown"
-    android:textStyle="bold"
-    android:textSize="16sp"
-    android:onClick="clickRegister"
-    />
+    <TextView
+        android:id="@+id/forgotPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnCadastrar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:clickable="true"
+        android:text="@string/forgot_password"
+        android:textAllCaps="true"
+        android:textColor="#872D2D"
+        android:textSize="14sp"
+        android:textStyle="bold" />
 
 </RelativeLayout>
