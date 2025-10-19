@@ -46,6 +46,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activities.EquipamentosActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.AdicionarEquipamentoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ReservarEquipamentoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.DetalhesEquipamentoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.MinhasReservasActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

@@ -5,4 +5,14 @@
     <color name="red_brown">#872D2D</color>
     <color name="moustard_gold">#B79B2E</color>
     <color name="gray">#888888</color>
+    
+    <!-- Cores para status de equipamentos -->
+    <color name="status_disponivel">#4CAF50</color>
+    <color name="status_reservado">#FF9800</color>
+    <color name="status_em_uso">#F44336</color>
+    
+    <!-- Cores para fundos e elementos -->
+    <color name="background_light">#FAFAFA</color>
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
 </resources>

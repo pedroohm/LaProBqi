@@ -37,8 +37,8 @@ public class InitialMenuActivity extends Activity {
     }
 
     public void clickScheduleEquip(View view) {
-        // TODO: Implementar agendamento de equipamentos
-        Toast.makeText(this, "Agendamento de Equipamentos em desenvolvimento", Toast.LENGTH_SHORT).show();
+        Intent it = new Intent(this, EquipamentosActivity.class);
+        startActivity(it);
     }
 
     public void clickPoints(View view) {
