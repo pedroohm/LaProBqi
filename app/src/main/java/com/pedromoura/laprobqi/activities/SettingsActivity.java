@@ -12,7 +12,11 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+
 import com.pedromoura.laprobqi.R;
+import com.pedromoura.laprobqi.di.RepositoryProvider;
+import com.pedromoura.laprobqi.repository.UsuarioRepository;
 
 import java.util.Locale;
 
@@ -21,6 +25,7 @@ public class SettingsActivity extends Activity {
     private RadioGroup radioGroupLanguage;
     private RadioButton radioPortuguese, radioEnglish;
     private SharedPreferences prefs;
+    private UsuarioRepository usuarioRepository;
     private static final String PREF_LANGUAGE = "app_language";
     private static final String PREF_LANGUAGE_CODE = "language_code";
 
@@ -39,6 +44,7 @@ public class SettingsActivity extends Activity {
         radioEnglish = findViewById(R.id.radioEnglish);
         
         prefs = getSharedPreferences("app_settings", MODE_PRIVATE);
+        usuarioRepository = RepositoryProvider.getInstance(this).getUsuarioRepository();
     }
 
     private void loadLanguageSettings() {
@@ -102,6 +108,29 @@ public class SettingsActivity extends Activity {
     public void clickChangePassword(View view) {
         // TODO: Implementar mudança de senha
         Toast.makeText(this, "Funcionalidade de mudança de senha em desenvolvimento", Toast.LENGTH_SHORT).show();
+    }
+
+    public void clickLogout(View view) {
+        new AlertDialog.Builder(this)
+            .setTitle("Encerrar Sessão")
+            .setMessage("Tem certeza que deseja sair da sua conta?")
+            .setPositiveButton("Sim", (dialog, which) -> {
+                usuarioRepository.logout((sucesso, mensagem) -> {
+                    if (sucesso) {
+                        Toast.makeText(this, "Sessão encerrada com sucesso", Toast.LENGTH_SHORT).show();
+                        
+                        // Redirecionar para tela de login
+                        Intent intent = new Intent(this, LoginActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Toast.makeText(this, "Erro ao encerrar sessão: " + mensagem, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            })
+            .setNegativeButton("Cancelar", null)
+            .show();
     }
 
     public void clickSaveSettings(View view) {
