@@ -1,6 +1,5 @@
 package com.pedromoura.laprobqi.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.pedromoura.laprobqi.BancoDadosProduto;
 import com.pedromoura.laprobqi.Produto;
-import com.pedromoura.laprobqi.ProdutoAdapter;
+import com.pedromoura.laprobqi.ProdutoTabelaAdapter;
 import com.pedromoura.laprobqi.R;
 
 import java.util.ArrayList;
@@ -22,7 +21,7 @@ import java.util.List;
 public class CatalogActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private ProdutoAdapter adapter;
+    private ProdutoTabelaAdapter adapter;
     private BancoDadosProduto banco;
     private EditText editPesquisa;
     private List<Produto> todosProdutos;
@@ -45,12 +44,6 @@ public class CatalogActivity extends AppCompatActivity {
         
         carregarProdutos();
         configurarPesquisa();
-        
-        // Botão para adicionar novo produto
-        findViewById(R.id.btnAdicionarProduto).setOnClickListener(v -> {
-            Intent intent = new Intent(this, ProdutoActivity.class);
-            startActivity(intent);
-        });
     }
     
     @Override
@@ -87,14 +80,15 @@ public class CatalogActivity extends AppCompatActivity {
         } else {
             String textoLower = texto.toLowerCase();
             for (Produto produto : todosProdutos) {
-                if (produto.getNome().toLowerCase().contains(textoLower)) {
+                if (produto.getNome().toLowerCase().contains(textoLower) ||
+                    String.valueOf(produto.getId()).contains(texto)) {
                     produtosFiltrados.add(produto);
                 }
             }
         }
         
         if (adapter == null) {
-            adapter = new ProdutoAdapter(produtosFiltrados, this, true); // true = modo catálogo
+            adapter = new ProdutoTabelaAdapter(produtosFiltrados, this);
             recyclerView.setAdapter(adapter);
         } else {
             adapter.atualizarLista(produtosFiltrados);

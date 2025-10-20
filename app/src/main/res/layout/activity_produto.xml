@@ -1,22 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent" 
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <LinearLayout
-        android:orientation="vertical" android:padding="16dp"
-        android:layout_width="match_parent" android:layout_height="wrap_content">
+        android:orientation="vertical" 
+        android:padding="16dp"
+        android:layout_width="match_parent" 
+        android:layout_height="wrap_content">
 
-        <EditText android:id="@+id/editNome" android:hint="Nome" android:layout_width="match_parent" android:layout_height="wrap_content"/>
-        <EditText android:id="@+id/editTipo" android:hint="Tipo" android:layout_width="match_parent" android:layout_height="wrap_content"/>
-        <EditText android:id="@+id/editValidade" android:hint="Validade (AAAA-MM-DD)" android:layout_width="match_parent" android:layout_height="wrap_content"/>
-        <EditText android:id="@+id/editQuantidade" android:hint="Quantidade" android:layout_width="match_parent" android:layout_height="wrap_content"/>
-        <EditText android:id="@+id/editUnidade" android:hint="Unidade (g, L...)" android:layout_width="match_parent" android:layout_height="wrap_content"/>
-        <EditText android:id="@+id/editObs" android:hint="Observações" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="CADASTRO DE PRODUTO"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/red_brown"
+            android:gravity="center"
+            android:layout_marginBottom="24dp"/>
 
-        <Button android:id="@+id/btnSalvar" android:text="Salvar Produto" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/white" android:backgroundTint="@color/moustard_gold"/>
-        <Button android:id="@+id/btnLimpar" android:text="Limpar Campos" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/white" android:backgroundTint="@color/moustard_gold"/>
-        <Button android:id="@+id/btnListar" android:text="Listar Produtos" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/white" android:backgroundTint="@color/moustard_gold"/>
+        <EditText 
+            android:id="@+id/editNome" 
+            android:hint="Nome do Produto*" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:background="@drawable/edit_text_background"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp"/>
 
-        <TextView android:id="@+id/textLista" android:layout_width="match_parent" android:layout_height="wrap_content" android:textSize="16sp" android:paddingTop="20dp"/>
+        <EditText 
+            android:id="@+id/editTipo" 
+            android:hint="Tipo/Categoria*" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:background="@drawable/edit_text_background"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Data de Validade"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="4dp"/>
+
+        <EditText 
+            android:id="@+id/editValidade" 
+            android:hint="Clique para selecionar a data" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:background="@drawable/edit_text_background"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp"
+            android:focusable="false"
+            android:clickable="true"
+            android:drawableEnd="@android:drawable/ic_menu_my_calendar"
+            android:drawablePadding="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="12dp">
+
+            <EditText 
+                android:id="@+id/editQuantidade" 
+                android:hint="Quantidade*" 
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edit_text_background"
+                android:padding="12dp"
+                android:inputType="numberDecimal"
+                android:layout_marginEnd="8dp"/>
+
+            <EditText 
+                android:id="@+id/editUnidade" 
+                android:hint="Unidade (kg, L, un...)" 
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edit_text_background"
+                android:padding="12dp"/>
+        </LinearLayout>
+
+        <EditText 
+            android:id="@+id/editObs" 
+            android:hint="Observações" 
+            android:layout_width="match_parent" 
+            android:layout_height="100dp"
+            android:background="@drawable/edit_text_background"
+            android:padding="12dp"
+            android:gravity="top"
+            android:layout_marginBottom="24dp"/>
+
+        <Button 
+            android:id="@+id/btnSalvar" 
+            android:text="💾 SALVAR PRODUTO" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content" 
+            android:textColor="@color/white" 
+            android:backgroundTint="@color/moustard_gold"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"/>
+
+        <Button 
+            android:id="@+id/btnLimpar" 
+            android:text="🗑️ LIMPAR CAMPOS" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content" 
+            android:textColor="@color/white" 
+            android:backgroundTint="@color/gray"
+            android:layout_marginBottom="8dp"/>
+
+        <Button 
+            android:id="@+id/btnListar" 
+            android:text="📋 LISTAR PRODUTOS" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content" 
+            android:textColor="@color/white" 
+            android:backgroundTint="@color/red_brown"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView 
+            android:id="@+id/textLista" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content" 
+            android:textSize="14sp" 
+            android:paddingTop="20dp"
+            android:textColor="@color/black"/>
     </LinearLayout>
 </ScrollView>

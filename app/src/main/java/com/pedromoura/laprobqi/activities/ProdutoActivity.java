@@ -1,5 +1,6 @@
 package com.pedromoura.laprobqi.activities;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -11,13 +12,18 @@ import com.pedromoura.laprobqi.BancoDadosProduto;
 import com.pedromoura.laprobqi.Produto;
 import com.pedromoura.laprobqi.R;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class ProdutoActivity extends AppCompatActivity {
 
     private EditText editNome, editTipo, editValidade, editQuantidade, editUnidade, editObs;
     private TextView textLista;
     private BancoDadosProduto banco;
+    private Calendar calendar;
+    private SimpleDateFormat dateFormatter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,10 +39,34 @@ public class ProdutoActivity extends AppCompatActivity {
         textLista = findViewById(R.id.textLista);
 
         banco = BancoDadosProduto.getInstancia(this);
+        calendar = Calendar.getInstance();
+        dateFormatter = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+
+        // Configurar DatePicker para o campo de validade
+        editValidade.setOnClickListener(v -> mostrarDatePicker());
 
         findViewById(R.id.btnSalvar).setOnClickListener(view -> salvarProduto());
         findViewById(R.id.btnListar).setOnClickListener(view -> listarProdutos());
         findViewById(R.id.btnLimpar).setOnClickListener(view -> limparCampos());
+    }
+
+    private void mostrarDatePicker() {
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+            this,
+            (view, year, month, dayOfMonth) -> {
+                calendar.set(Calendar.YEAR, year);
+                calendar.set(Calendar.MONTH, month);
+                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                editValidade.setText(dateFormatter.format(calendar.getTime()));
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        );
+        
+        // Define a data mínima como hoje
+        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+        datePickerDialog.show();
     }
 
     private void salvarProduto() {
@@ -50,26 +80,43 @@ public class ProdutoActivity extends AppCompatActivity {
         // Validações
         if (nome.isEmpty()) {
             editNome.setError("Nome é obrigatório");
+            editNome.requestFocus();
             return;
         }
         if (tipo.isEmpty()) {
             editTipo.setError("Tipo é obrigatório");
+            editTipo.requestFocus();
             return;
         }
         if (quantidadeStr.isEmpty()) {
             editQuantidade.setError("Quantidade é obrigatória");
+            editQuantidade.requestFocus();
+            return;
+        }
+        if (validade.isEmpty()) {
+            Toast.makeText(this, "Por favor, selecione a data de validade", Toast.LENGTH_SHORT).show();
+            editValidade.requestFocus();
             return;
         }
 
         try {
             double quantidade = Double.parseDouble(quantidadeStr);
             
-            Produto p = new Produto(nome, tipo, validade, quantidade, unidade, obs);
-            banco.inserirProduto(p);
-            Toast.makeText(this, "Produto salvo com sucesso!", Toast.LENGTH_SHORT).show();
+            if (quantidade <= 0) {
+                editQuantidade.setError("Quantidade deve ser maior que zero");
+                return;
+            }
             
-            limparCampos();
-            listarProdutos(); // Atualiza a lista automaticamente
+            Produto p = new Produto(nome, tipo, validade, quantidade, unidade, obs);
+            boolean sucesso = banco.inserirProduto(p);
+            
+            if (sucesso) {
+                Toast.makeText(this, "✓ Produto salvo com sucesso!", Toast.LENGTH_SHORT).show();
+                limparCampos();
+                listarProdutos();
+            } else {
+                Toast.makeText(this, "✗ Erro ao salvar produto", Toast.LENGTH_SHORT).show();
+            }
             
         } catch (NumberFormatException e) {
             editQuantidade.setError("Quantidade deve ser um número válido");

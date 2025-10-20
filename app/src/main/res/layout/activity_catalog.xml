@@ -51,24 +51,72 @@
         android:background="@android:drawable/edit_text"
         android:layout_marginBottom="16dp"/>
 
-    <!-- Botão Adicionar Produto -->
-    <Button
-        android:id="@+id/btnAdicionarProduto"
+    <!-- Cabeçalho da Tabela -->
+    <LinearLayout
+        android:id="@+id/tableHeader"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:layout_below="@id/editPesquisa"
-        android:text="+ ADICIONAR PRODUTO"
-        android:textStyle="bold"
-        android:backgroundTint="@color/moustard_gold"
-        android:textColor="@color/white"
-        android:layout_marginBottom="16dp"/>
+        android:orientation="horizontal"
+        android:background="@color/red_brown"
+        android:padding="12dp"
+        android:weightSum="4"
+        android:layout_marginBottom="2dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="PRODUTO"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:paddingEnd="8dp"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="CÓDIGO"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="QUANTIDADE"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="VALIDADE"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:paddingStart="8dp"/>
+
+    </LinearLayout>
 
     <!-- RecyclerView para lista de produtos -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewProdutos"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/btnAdicionarProduto"
+        android:layout_below="@id/tableHeader"
+        android:background="@android:color/white"
         android:scrollbars="vertical"/>
 
 </RelativeLayout>

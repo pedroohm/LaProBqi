@@ -4,7 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
+import com.pedromoura.laprobqi.database.DatabaseHelper;
 import com.pedromoura.laprobqi.models.Reserva;
 import com.pedromoura.laprobqi.repository.ReservaRepository;
 import java.util.ArrayList;
@@ -12,8 +12,6 @@ import java.util.List;
 
 public class ReservaRepositorySQLite implements ReservaRepository {
     
-    private static final String DATABASE_NAME = "laprobqi.db";
-    private static final int DATABASE_VERSION = 1;
     private static final String TABLE_RESERVAS = "reservas";
     
     private static final String COL_ID = "id";
@@ -28,17 +26,13 @@ public class ReservaRepositorySQLite implements ReservaRepository {
     private static final String COL_DATA_CRIACAO = "data_criacao";
     
     private DatabaseHelper dbHelper;
-    private SQLiteDatabase database;
     
     public ReservaRepositorySQLite(Context context) {
-        dbHelper = new DatabaseHelper(context);
+        dbHelper = DatabaseHelper.getInstance(context);
     }
     
     private SQLiteDatabase getDatabase() {
-        if (database == null || !database.isOpen()) {
-            database = dbHelper.getWritableDatabase();
-        }
-        return database;
+        return dbHelper.getWritableDatabase();
     }
     
     @Override
@@ -267,35 +261,5 @@ public class ReservaRepositorySQLite implements ReservaRepository {
         reserva.setStatus(cursor.getString(cursor.getColumnIndexOrThrow(COL_STATUS)));
         reserva.setDataCriacao(cursor.getString(cursor.getColumnIndexOrThrow(COL_DATA_CRIACAO)));
         return reserva;
-    }
-    
-    private static class DatabaseHelper extends SQLiteOpenHelper {
-        
-        public DatabaseHelper(Context context) {
-            super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        }
-        
-        @Override
-        public void onCreate(SQLiteDatabase db) {
-            String createTable = "CREATE TABLE " + TABLE_RESERVAS + " (" +
-                    COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    COL_EQUIPAMENTO_ID + " TEXT NOT NULL, " +
-                    COL_EQUIPAMENTO_NOME + " TEXT NOT NULL, " +
-                    COL_USUARIO_ID + " TEXT NOT NULL, " +
-                    COL_USUARIO_NOME + " TEXT NOT NULL, " +
-                    COL_DATA_RESERVA + " TEXT NOT NULL, " +
-                    COL_HORA_INICIO + " TEXT NOT NULL, " +
-                    COL_HORA_FIM + " TEXT NOT NULL, " +
-                    COL_STATUS + " TEXT NOT NULL DEFAULT 'ATIVA', " +
-                    COL_DATA_CRIACAO + " TEXT NOT NULL" +
-                    ")";
-            db.execSQL(createTable);
-        }
-        
-        @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_RESERVAS);
-            onCreate(db);
-        }
     }
 }

@@ -4,7 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
+import com.pedromoura.laprobqi.database.DatabaseHelper;
 import com.pedromoura.laprobqi.models.Equipamento;
 import com.pedromoura.laprobqi.repository.EquipamentoRepository;
 import java.util.ArrayList;
@@ -12,8 +12,6 @@ import java.util.List;
 
 public class EquipamentoRepositorySQLite implements EquipamentoRepository {
     
-    private static final String DATABASE_NAME = "laprobqi.db";
-    private static final int DATABASE_VERSION = 1;
     private static final String TABLE_EQUIPAMENTOS = "equipamentos";
     
     private static final String COL_ID = "id";
@@ -23,17 +21,13 @@ public class EquipamentoRepositorySQLite implements EquipamentoRepository {
     private static final String COL_DATA_CRIACAO = "data_criacao";
     
     private DatabaseHelper dbHelper;
-    private SQLiteDatabase database;
     
     public EquipamentoRepositorySQLite(Context context) {
-        dbHelper = new DatabaseHelper(context);
+        dbHelper = DatabaseHelper.getInstance(context);
     }
     
     private SQLiteDatabase getDatabase() {
-        if (database == null || !database.isOpen()) {
-            database = dbHelper.getWritableDatabase();
-        }
-        return database;
+        return dbHelper.getWritableDatabase();
     }
     
     @Override
@@ -187,30 +181,5 @@ public class EquipamentoRepositorySQLite implements EquipamentoRepository {
         equipamento.setStatus(cursor.getString(cursor.getColumnIndexOrThrow(COL_STATUS)));
         equipamento.setDataCriacao(cursor.getString(cursor.getColumnIndexOrThrow(COL_DATA_CRIACAO)));
         return equipamento;
-    }
-    
-    private static class DatabaseHelper extends SQLiteOpenHelper {
-        
-        public DatabaseHelper(Context context) {
-            super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        }
-        
-        @Override
-        public void onCreate(SQLiteDatabase db) {
-            String createTable = "CREATE TABLE " + TABLE_EQUIPAMENTOS + " (" +
-                    COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    COL_NOME + " TEXT NOT NULL, " +
-                    COL_DESCRICAO + " TEXT, " +
-                    COL_STATUS + " TEXT NOT NULL DEFAULT 'DISPONIVEL', " +
-                    COL_DATA_CRIACAO + " TEXT NOT NULL" +
-                    ")";
-            db.execSQL(createTable);
-        }
-        
-        @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_EQUIPAMENTOS);
-            onCreate(db);
-        }
     }
 }

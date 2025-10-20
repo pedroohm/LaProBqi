@@ -4,7 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
+import com.pedromoura.laprobqi.database.DatabaseHelper;
 import com.pedromoura.laprobqi.models.RegistroUso;
 import com.pedromoura.laprobqi.repository.RegistroUsoRepository;
 import java.util.ArrayList;
@@ -12,8 +12,6 @@ import java.util.List;
 
 public class RegistroUsoRepositorySQLite implements RegistroUsoRepository {
     
-    private static final String DATABASE_NAME = "laprobqi.db";
-    private static final int DATABASE_VERSION = 1;
     private static final String TABLE_REGISTROS_USO = "registros_uso";
     
     private static final String COL_ID = "id";
@@ -30,17 +28,13 @@ public class RegistroUsoRepositorySQLite implements RegistroUsoRepository {
     private static final String COL_OBSERVACOES = "observacoes";
     
     private DatabaseHelper dbHelper;
-    private SQLiteDatabase database;
     
     public RegistroUsoRepositorySQLite(Context context) {
-        dbHelper = new DatabaseHelper(context);
+        dbHelper = DatabaseHelper.getInstance(context);
     }
     
     private SQLiteDatabase getDatabase() {
-        if (database == null || !database.isOpen()) {
-            database = dbHelper.getWritableDatabase();
-        }
-        return database;
+        return dbHelper.getWritableDatabase();
     }
     
     @Override
@@ -275,37 +269,5 @@ public class RegistroUsoRepositorySQLite implements RegistroUsoRepository {
         registroUso.setStatus(cursor.getString(cursor.getColumnIndexOrThrow(COL_STATUS)));
         registroUso.setObservacoes(cursor.getString(cursor.getColumnIndexOrThrow(COL_OBSERVACOES)));
         return registroUso;
-    }
-    
-    private static class DatabaseHelper extends SQLiteOpenHelper {
-        
-        public DatabaseHelper(Context context) {
-            super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        }
-        
-        @Override
-        public void onCreate(SQLiteDatabase db) {
-            String createTable = "CREATE TABLE " + TABLE_REGISTROS_USO + " (" +
-                    COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    COL_EQUIPAMENTO_ID + " TEXT NOT NULL, " +
-                    COL_EQUIPAMENTO_NOME + " TEXT NOT NULL, " +
-                    COL_USUARIO_ID + " TEXT NOT NULL, " +
-                    COL_USUARIO_NOME + " TEXT NOT NULL, " +
-                    COL_RESERVA_ID + " TEXT, " +
-                    COL_DATA_INICIO + " TEXT NOT NULL, " +
-                    COL_HORA_INICIO + " TEXT NOT NULL, " +
-                    COL_DATA_FIM + " TEXT, " +
-                    COL_HORA_FIM + " TEXT, " +
-                    COL_STATUS + " TEXT NOT NULL DEFAULT 'EM_ANDAMENTO', " +
-                    COL_OBSERVACOES + " TEXT" +
-                    ")";
-            db.execSQL(createTable);
-        }
-        
-        @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_REGISTROS_USO);
-            onCreate(db);
-        }
     }
 }

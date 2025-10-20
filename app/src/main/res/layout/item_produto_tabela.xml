@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/contentLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:background="@android:color/white"
+        android:weightSum="4">
+
+        <!-- PRODUTO -->
+        <TextView
+            android:id="@+id/txtProdutoNome"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Produto"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:paddingEnd="8dp"
+            android:ellipsize="end"
+            android:maxLines="2"/>
+
+        <!-- CÓDIGO -->
+        <TextView
+            android:id="@+id/txtProdutoCodigo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="000"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"/>
+
+        <!-- QUANTIDADE -->
+        <TextView
+            android:id="@+id/txtProdutoQuantidade"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="0"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"/>
+
+        <!-- VALIDADE -->
+        <TextView
+            android:id="@+id/txtProdutoValidade"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="--/--/----"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:paddingStart="8dp"/>
+
+    </LinearLayout>
+
+    <!-- Divider -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/divider_tabela"/>
+
+</LinearLayout>

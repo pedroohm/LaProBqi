@@ -4,19 +4,23 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import com.pedromoura.laprobqi.database.DatabaseHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BancoDadosProduto extends SQLiteOpenHelper {
+/**
+ * Classe para gerenciar operações de produtos no banco de dados.
+ * Agora usa o DatabaseHelper centralizado.
+ */
+public class BancoDadosProduto {
 
-    private static final String NOME_BANCO = "laprobqi_database";
-    private static final int VERSAO = 1;
     private static final String TAG = "BancoDadosProduto";
 
     private static BancoDadosProduto instancia;
+    private DatabaseHelper dbHelper;
 
     public static synchronized BancoDadosProduto getInstancia(Context context) {
         if (instancia == null) {
@@ -26,35 +30,15 @@ public class BancoDadosProduto extends SQLiteOpenHelper {
     }
 
     private BancoDadosProduto(Context context) {
-        super(context, NOME_BANCO, null, VERSAO);
+        dbHelper = DatabaseHelper.getInstance(context);
     }
-
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        try {
-            db.execSQL("CREATE TABLE produto (" +
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    "nome TEXT NOT NULL," +
-                    "tipo TEXT NOT NULL," +
-                    "validade TEXT," +
-                    "quantidade REAL DEFAULT 0," +
-                    "unidade TEXT," +
-                    "observacoes TEXT);");
-            Log.i(TAG, "Tabela produto criada com sucesso");
-        } catch (Exception e) {
-            Log.e(TAG, "Erro ao criar tabela produto: " + e.getMessage());
-        }
+    
+    private SQLiteDatabase getWritableDatabase() {
+        return dbHelper.getWritableDatabase();
     }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        try {
-            db.execSQL("DROP TABLE IF EXISTS produto");
-            onCreate(db);
-            Log.i(TAG, "Banco atualizado da versão " + oldVersion + " para " + newVersion);
-        } catch (Exception e) {
-            Log.e(TAG, "Erro ao atualizar banco: " + e.getMessage());
-        }
+    
+    private SQLiteDatabase getReadableDatabase() {
+        return dbHelper.getReadableDatabase();
     }
 
     // Inserir produto com tratamento de erro
