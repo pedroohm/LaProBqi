@@ -23,6 +23,9 @@
             android:name=".activities.AlertActivity"
             android:exported="false" />
         <activity
+            android:name=".activities.StockOptionsActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.StockActivity"
             android:exported="false" />
         <activity

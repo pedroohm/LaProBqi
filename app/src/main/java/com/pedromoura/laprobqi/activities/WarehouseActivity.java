@@ -3,6 +3,7 @@ package com.pedromoura.laprobqi.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 
 import android.app.Activity;
 
@@ -14,6 +15,13 @@ public class WarehouseActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_warehouse);
+        
+        // Configurar header
+        ImageView configLogo = findViewById(R.id.configLogo);
+        configLogo.setOnClickListener(v -> {
+            Intent intent = new Intent(WarehouseActivity.this, SettingsActivity.class);
+            startActivity(intent);
+        });
     }
 
     public void clickCatalog(View view) {

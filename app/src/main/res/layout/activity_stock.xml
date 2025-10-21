@@ -2,61 +2,52 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:padding="16dp">
+    android:background="@color/white">
 
     <!-- Cabeçalho -->
-    <LinearLayout
-        android:id="@+id/headerLayout"
-        android:layout_width="match_parent"
+    <include
+        android:id="@+id/headerToolbar"
+        layout="@layout/header_toolbar" />
+
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_marginBottom="16dp">
+        android:text="@string/stock"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/red_brown"
+        android:gravity="center"
+        android:letterSpacing="0.1"
 
-        <ImageView
-            android:id="@+id/logo"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/logo" />
+        android:layout_alignTop="@id/headerToolbar"
+        android:layout_alignBottom="@id/headerToolbar"
+        android:layout_centerHorizontal="true" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="CONTROLE DE ESTOQUE"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="@color/red_brown"
-            android:gravity="center"
-            android:layout_marginStart="16dp"/>
+    <LinearLayout
+        android:id="@+id/contentLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/headerToolbar"
+        android:orientation="vertical"
+        android:padding="16dp">
 
-        <ImageView
-            android:id="@+id/btnConfig"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/config"
-            android:clickable="true"
-            android:focusable="true"/>
-    </LinearLayout>
+
 
     <!-- Campo de Pesquisa -->
     <EditText
         android:id="@+id/editPesquisa"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_below="@id/headerLayout"
         android:hint="🔍 Pesquisar por nome..."
         android:padding="12dp"
-        android:background="@android:drawable/edit_text"
-        android:layout_marginBottom="16dp"/>
+        android:background="@drawable/edit_text_background"
+        android:layout_marginBottom="8dp"/>
 
     <!-- Botão Adicionar Produto -->
     <Button
         android:id="@+id/btnAdicionarProduto"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_below="@id/editPesquisa"
+        android:layout_height="wrap_content"
         android:text="+ ADICIONAR PRODUTO"
         android:textStyle="bold"
         android:backgroundTint="@color/moustard_gold"
@@ -67,8 +58,10 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewEstoque"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/btnAdicionarProduto"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:scrollbars="vertical"/>
+
+    </LinearLayout>
 
 </RelativeLayout>

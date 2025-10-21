@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -46,14 +47,18 @@ public class MinhasReservasActivity extends AppCompatActivity {
         // Inicializar views
         inicializarViews();
         
-        // Carregar usuário atual
+        // Carregar usuário atual (que depois carregará as reservas)
         carregarUsuarioAtual();
-        
-        // Carregar reservas do usuário
-        carregarReservas();
     }
 
     private void inicializarViews() {
+        // Configurar header
+        ImageView configLogo = findViewById(R.id.configLogo);
+        configLogo.setOnClickListener(v -> {
+            Intent intent = new Intent(MinhasReservasActivity.this, SettingsActivity.class);
+            startActivity(intent);
+        });
+
         listViewReservas = findViewById(R.id.listViewReservas);
         btnNovaReserva = findViewById(R.id.btnNovaReserva);
         btnVoltar = findViewById(R.id.btnVoltar);
@@ -70,6 +75,8 @@ public class MinhasReservasActivity extends AppCompatActivity {
     private void carregarUsuarioAtual() {
         usuarioRepository.obterUsuarioAtual(usuario -> {
             usuarioAtual = usuario;
+            // Carregar reservas DEPOIS que o usuário for obtido
+            carregarReservas();
         });
     }
 

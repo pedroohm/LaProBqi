@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/headerToolbar"
+    android:orientation="horizontal"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp"
+    android:paddingLeft="24dp"
+    android:paddingRight="24dp"
+    android:background="@color/white">
+
+    <ImageView
+        android:id="@+id/miniLogo"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/logo"
+        android:contentDescription="Logo" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <ImageView
+        android:id="@+id/configLogo"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/config"
+        android:layout_gravity="center_vertical"
+        android:contentDescription="Configurações"
+        android:clickable="true"
+        android:focusable="true" />
+
+</LinearLayout>

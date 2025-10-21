@@ -7,6 +7,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -62,6 +63,13 @@ public class EquipamentosActivity extends AppCompatActivity {
     }
 
     private void inicializarViews() {
+        // Configurar header
+        ImageView configLogo = findViewById(R.id.configLogo);
+        configLogo.setOnClickListener(v -> {
+            Intent intent = new Intent(EquipamentosActivity.this, SettingsActivity.class);
+            startActivity(intent);
+        });
+
         listViewEquipamentos = findViewById(R.id.listViewEquipamentos);
         editTextBusca = findViewById(R.id.editTextBusca);
         btnBuscar = findViewById(R.id.btnBuscar);

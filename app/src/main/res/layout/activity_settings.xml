@@ -30,6 +30,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/config"
+                android:textAllCaps="true"
+                android:gravity="center"
+
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:textColor="@color/red_brown"

@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,6 +29,7 @@ public class StockActivity extends AppCompatActivity {
     private EditText editPesquisa;
     private List<Produto> todosProdutos;
     private List<Produto> produtosFiltrados;
+    private String action;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +37,19 @@ public class StockActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_stock);
         
+        // Configurar header
+        ImageView configLogo = findViewById(R.id.configLogo);
+        configLogo.setOnClickListener(v -> {
+            Intent intent = new Intent(StockActivity.this, SettingsActivity.class);
+            startActivity(intent);
+        });
+        
+        // Get the action from the intent
+        action = getIntent().getStringExtra("ACTION");
+        if (action == null) {
+            action = "ENTRY"; // Default action
+        }
+
         banco = BancoDadosProduto.getInstancia(this);
         
         recyclerView = findViewById(R.id.recyclerViewEstoque);
@@ -47,7 +63,14 @@ public class StockActivity extends AppCompatActivity {
         configurarPesquisa();
         
         // Botão para adicionar novo produto
-        findViewById(R.id.btnAdicionarProduto).setOnClickListener(v -> {
+        View btnAdicionarProduto = findViewById(R.id.btnAdicionarProduto);
+        if ("EXIT".equals(action)) {
+            btnAdicionarProduto.setVisibility(View.GONE);
+        } else {
+            btnAdicionarProduto.setVisibility(View.VISIBLE);
+        }
+
+        btnAdicionarProduto.setOnClickListener(v -> {
             Intent intent = new Intent(this, ProdutoActivity.class);
             startActivity(intent);
         });
@@ -61,14 +84,19 @@ public class StockActivity extends AppCompatActivity {
     
     private void carregarEstoque() {
         todosProdutos = banco.listarProdutos();
-        // Filtra apenas produtos com quantidade > 0
-        List<Produto> produtosComEstoque = new ArrayList<>();
-        for (Produto produto : todosProdutos) {
-            if (produto.getQuantidade() > 0) {
-                produtosComEstoque.add(produto);
+        
+        if ("EXIT".equals(action)) {
+            // Filtra apenas produtos com quantidade > 0 para o modo de saída
+            List<Produto> produtosComEstoque = new ArrayList<>();
+            for (Produto produto : todosProdutos) {
+                if (produto.getQuantidade() > 0) {
+                    produtosComEstoque.add(produto);
+                }
             }
+            todosProdutos = produtosComEstoque;
         }
-        todosProdutos = produtosComEstoque;
+        // Para o modo de entrada, mostra todos os produtos
+
         filtrarProdutos(editPesquisa.getText().toString());
     }
     
@@ -102,9 +130,10 @@ public class StockActivity extends AppCompatActivity {
         }
         
         if (adapter == null) {
-            adapter = new ProdutoAdapter(produtosFiltrados, this, false); // false = modo estoque
+            adapter = new ProdutoAdapter(produtosFiltrados, this, "EXIT".equals(action)); // true for exit mode, false for entry mode
             recyclerView.setAdapter(adapter);
         } else {
+            adapter.setExitMode("EXIT".equals(action));
             adapter.atualizarLista(produtosFiltrados);
         }
     }

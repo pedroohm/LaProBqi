@@ -17,7 +17,7 @@
             android:text="Adicionar Equipamento"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:textColor="@color/text_primary"
+            android:textColor="@color/red_brown"
             android:gravity="center"
             android:layout_marginBottom="24dp" />
 

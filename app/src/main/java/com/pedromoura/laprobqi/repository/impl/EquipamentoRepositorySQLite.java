@@ -120,8 +120,8 @@ public class EquipamentoRepositorySQLite implements EquipamentoRepository {
     public void obterEquipamentosDisponiveis(OnEquipamentosListener listener) {
         try {
             SQLiteDatabase db = getDatabase();
-            Cursor cursor = db.query(TABLE_EQUIPAMENTOS, null, COL_STATUS + " = ?", 
-                                   new String[]{"DISPONIVEL"}, null, null, COL_NOME);
+            // Buscar todos os equipamentos (não filtrar por status)
+            Cursor cursor = db.query(TABLE_EQUIPAMENTOS, null, null, null, null, null, COL_NOME);
             
             List<Equipamento> equipamentos = new ArrayList<>();
             while (cursor.moveToNext()) {

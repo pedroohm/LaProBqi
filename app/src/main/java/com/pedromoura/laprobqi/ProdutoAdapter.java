@@ -20,13 +20,17 @@ public class ProdutoAdapter extends RecyclerView.Adapter<ProdutoAdapter.ProdutoV
     private List<Produto> produtos;
     private Context context;
     private BancoDadosProduto banco;
-    private boolean modoCatalogo; // true = catálogo, false = estoque
+    private boolean isExitMode; // true = exit mode, false = entry mode
 
-    public ProdutoAdapter(List<Produto> produtos, Context context, boolean modoCatalogo) {
+    public ProdutoAdapter(List<Produto> produtos, Context context, boolean isExitMode) {
         this.produtos = produtos;
         this.context = context;
         this.banco = BancoDadosProduto.getInstancia(context);
-        this.modoCatalogo = modoCatalogo;
+        this.isExitMode = isExitMode;
+    }
+
+    public void setExitMode(boolean exitMode) {
+        isExitMode = exitMode;
     }
 
     @NonNull
@@ -66,26 +70,21 @@ public class ProdutoAdapter extends RecyclerView.Adapter<ProdutoAdapter.ProdutoV
             btnAdicionar = itemView.findViewById(R.id.btnAdicionar);
             btnRemover = itemView.findViewById(R.id.btnRemover);
 
-            // Configurar visibilidade dos botões baseado no modo
-            if (modoCatalogo) {
-                // Modo catálogo: botões para editar e deletar
-                btnAdicionar.setText("Editar");
-                btnRemover.setText("Excluir");
-                btnAdicionar.setVisibility(View.VISIBLE);
+            setupButtons();
+        }
+
+        private void setupButtons() {
+            // Modo estoque: botões para adicionar e remover quantidade
+            if (isExitMode) {
+                btnAdicionar.setVisibility(View.GONE);
                 btnRemover.setVisibility(View.VISIBLE);
-                
-                btnAdicionar.setOnClickListener(v -> editarProduto());
-                btnRemover.setOnClickListener(v -> excluirProduto());
-                
-            } else {
-                // Modo estoque: botões para adicionar e remover quantidade
-                btnAdicionar.setText("+");
                 btnRemover.setText("-");
-                btnAdicionar.setVisibility(View.VISIBLE);
-                btnRemover.setVisibility(View.VISIBLE);
-                
-                btnAdicionar.setOnClickListener(v -> adicionarQuantidade());
                 btnRemover.setOnClickListener(v -> removerQuantidade());
+            } else {
+                btnAdicionar.setVisibility(View.VISIBLE);
+                btnRemover.setVisibility(View.GONE);
+                btnAdicionar.setText("+");
+                btnAdicionar.setOnClickListener(v -> adicionarQuantidade());
             }
         }
 
@@ -185,6 +184,8 @@ public class ProdutoAdapter extends RecyclerView.Adapter<ProdutoAdapter.ProdutoV
             txtQuantidade.setText("Quantidade: " + produto.getQuantidade() + " " + produto.getUnidade());
             txtValidade.setText("Validade: " + produto.getValidade());
             txtObservacoes.setText("Obs: " + produto.getObservacoes());
+
+            setupButtons();
         }
     }
-} 
+}

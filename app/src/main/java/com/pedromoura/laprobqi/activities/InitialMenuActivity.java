@@ -17,7 +17,7 @@ public class InitialMenuActivity extends Activity {
     }
 
     public void clickWarehouse(View view) {
-        Intent it = new Intent(this, WarehouseActivity.class);
+        Intent it = new Intent(this, StockOptionsActivity.class);
         startActivity(it);
     }
 

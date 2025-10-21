@@ -3,15 +3,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
-    android:background="@color/background_light">
+    android:background="@color/white">
 
-    <!-- Header com busca e filtros -->
+    <include
+        android:id="@+id/headerToolbar"
+        layout="@layout/header_toolbar" />
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_marginBottom="16dp">
+        android:padding="16dp">
+
+        <!-- Header com busca e filtros -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp">
 
         <!-- Campo de busca -->
         <LinearLayout
@@ -107,4 +116,5 @@
         android:layout_gravity="center"
         android:visibility="gone" />
 
+</LinearLayout>
 </LinearLayout>

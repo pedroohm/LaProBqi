@@ -107,7 +107,7 @@ public class ReservarEquipamentoActivity extends AppCompatActivity {
 
     private void carregarEquipamentosDisponiveis() {
         progressBar.setVisibility(View.VISIBLE);
-        equipamentoRepository.obterEquipamentosDisponiveis(new EquipamentoRepository.OnEquipamentosListener() {
+        equipamentoRepository.obterTodosEquipamentos(new EquipamentoRepository.OnEquipamentosListener() {
             @Override
             public void onSuccess(List<Equipamento> equipamentos) {
                 progressBar.setVisibility(View.GONE);
@@ -278,22 +278,9 @@ public class ReservarEquipamentoActivity extends AppCompatActivity {
         reservaRepository.salvarReserva(reserva, new ReservaRepository.OnReservaListener() {
             @Override
             public void onSuccess(Reserva reservaSalva) {
-                // Atualizar status do equipamento para RESERVADO
-                equipamentoRepository.atualizarStatusEquipamento(equipamentoSelecionado.getId(), "RESERVADO",
-                    new EquipamentoRepository.OnBooleanListener() {
-                        @Override
-                        public void onSuccess(boolean success) {
-                            progressBar.setVisibility(View.GONE);
-                            showToast("Reserva realizada com sucesso!");
-                            finish();
-                        }
-
-                        @Override
-                        public void onFailure(String mensagem) {
-                            progressBar.setVisibility(View.GONE);
-                            showToast("Reserva criada, mas erro ao atualizar status do equipamento: " + mensagem);
-                        }
-                    });
+                progressBar.setVisibility(View.GONE);
+                showToast("Reserva realizada com sucesso!");
+                finish();
             }
 
             @Override
