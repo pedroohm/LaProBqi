@@ -1,10 +1,12 @@
 package com.pedromoura.laprobqi.activities;
 
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -18,10 +20,13 @@ import com.pedromoura.laprobqi.repository.UsuarioRepository;
 public class RegisterActivity extends AppCompatActivity {
 
     private EditText editName, editEmail, editPassword, editConfirmPassword;
+    private ImageView btnTogglePasswordRegister, btnTogglePasswordConfirm;
     private Spinner spinnerNivelAcesso;
     private Button btnRegister;
     private ProgressBar progressBar;
     private UsuarioRepository usuarioRepository;
+    private boolean isPasswordVisible = false;
+    private boolean isConfirmPasswordVisible = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +41,8 @@ public class RegisterActivity extends AppCompatActivity {
         editEmail = findViewById(R.id.emailRegisterInput);
         editPassword = findViewById(R.id.passwordRegisterInput);
         editConfirmPassword = findViewById(R.id.passwordConfirmRegisterInput);
+        btnTogglePasswordRegister = findViewById(R.id.btnTogglePasswordRegister);
+        btnTogglePasswordConfirm = findViewById(R.id.btnTogglePasswordConfirm);
         spinnerNivelAcesso = findViewById(R.id.spinnerNivelAcesso);
         btnRegister = findViewById(R.id.btnRegister);
         progressBar = findViewById(R.id.progress_bar);
@@ -50,6 +57,40 @@ public class RegisterActivity extends AppCompatActivity {
         spinnerNivelAcesso.setAdapter(adapter);
 
         btnRegister.setOnClickListener(v -> registrar());
+        btnTogglePasswordRegister.setOnClickListener(v -> togglePasswordVisibility());
+        btnTogglePasswordConfirm.setOnClickListener(v -> toggleConfirmPasswordVisibility());
+    }
+
+    private void togglePasswordVisibility() {
+        if (isPasswordVisible) {
+            // Ocultar senha
+            editPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            btnTogglePasswordRegister.setImageResource(android.R.drawable.ic_secure);
+            isPasswordVisible = false;
+        } else {
+            // Mostrar senha
+            editPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            btnTogglePasswordRegister.setImageResource(android.R.drawable.ic_menu_view);
+            isPasswordVisible = true;
+        }
+        // Mover cursor para o final
+        editPassword.setSelection(editPassword.getText().length());
+    }
+
+    private void toggleConfirmPasswordVisibility() {
+        if (isConfirmPasswordVisible) {
+            // Ocultar senha
+            editConfirmPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            btnTogglePasswordConfirm.setImageResource(android.R.drawable.ic_secure);
+            isConfirmPasswordVisible = false;
+        } else {
+            // Mostrar senha
+            editConfirmPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            btnTogglePasswordConfirm.setImageResource(android.R.drawable.ic_menu_view);
+            isConfirmPasswordVisible = true;
+        }
+        // Mover cursor para o final
+        editConfirmPassword.setSelection(editConfirmPassword.getText().length());
     }
 
     private void registrar() {

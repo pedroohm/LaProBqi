@@ -123,44 +123,88 @@
         android:textStyle="bold"
         />
 
-    <EditText
+    <RelativeLayout
+        android:id="@+id/passwordRegisterContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/passwordRegisterInput"
-        android:layout_below="@id/passwordRegisterView"
-        android:inputType="textPassword"
-        android:textColor="@color/text_primary"
-        android:backgroundTint="@color/moustard_gold_dark"
-        />
+        android:layout_below="@id/passwordRegisterView">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/passwordRegisterInput"
+            android:inputType="textPassword"
+            android:paddingEnd="48dp"
+            android:textColor="@color/text_primary"
+            android:backgroundTint="@color/moustard_gold_dark"
+            />
+
+        <ImageView
+            android:id="@+id/btnTogglePasswordRegister"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="4dp"
+            android:padding="8dp"
+            android:src="@android:drawable/ic_secure"
+            android:contentDescription="Mostrar/Ocultar senha"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless" />
+
+    </RelativeLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/passwordConfirmRegisterView"
         android:text="@string/password_confirm"
-        android:layout_below="@id/passwordRegisterInput"
+        android:layout_below="@id/passwordRegisterContainer"
         android:textColor="@color/red_brown"
         android:textAllCaps="true"
         android:layout_marginTop="10dp"
         android:textStyle="bold"
         />
 
-    <EditText
+    <RelativeLayout
+        android:id="@+id/passwordConfirmRegisterContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/passwordConfirmRegisterInput"
-        android:layout_below="@id/passwordConfirmRegisterView"
-        android:inputType="textPassword"
-        android:textColor="@color/text_primary"
-        android:backgroundTint="@color/moustard_gold_dark"
-        />
+        android:layout_below="@id/passwordConfirmRegisterView">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/passwordConfirmRegisterInput"
+            android:inputType="textPassword"
+            android:paddingEnd="48dp"
+            android:textColor="@color/text_primary"
+            android:backgroundTint="@color/moustard_gold_dark"
+            />
+
+        <ImageView
+            android:id="@+id/btnTogglePasswordConfirm"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="4dp"
+            android:padding="8dp"
+            android:src="@android:drawable/ic_secure"
+            android:contentDescription="Mostrar/Ocultar senha"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless" />
+
+    </RelativeLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/nivelAcessoView"
         android:text="Nível de Acesso"
-        android:layout_below="@id/passwordConfirmRegisterInput"
+        android:layout_below="@id/passwordConfirmRegisterContainer"
         android:textColor="@color/red_brown"
         android:textAllCaps="true"
         android:layout_marginTop="10dp"
