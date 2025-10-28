@@ -1,4 +1,4 @@
-package com.pedromoura.laprobqi;
+package com.pedromoura.laprobqi.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -9,6 +9,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.pedromoura.laprobqi.Produto;
+import com.pedromoura.laprobqi.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

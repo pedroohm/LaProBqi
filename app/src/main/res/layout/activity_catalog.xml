@@ -49,6 +49,8 @@
         android:hint="🔍 Pesquisar por nome..."
         android:padding="12dp"
         android:background="@android:drawable/edit_text"
+        android:textColor="@color/text_primary"
+        android:textColorHint="@color/input_hint"
         android:layout_marginBottom="16dp"/>
 
     <!-- Cabeçalho da Tabela -->

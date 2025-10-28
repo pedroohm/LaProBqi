@@ -63,6 +63,8 @@
         android:id="@+id/nameRegisterInput"
         android:layout_below="@id/nameRegisterView"
         android:inputType="text"
+        android:textColor="@color/text_primary"
+        android:backgroundTint="@color/moustard_gold_dark"
         />
 
     <TextView
@@ -83,6 +85,8 @@
         android:id="@+id/emailRegisterInput"
         android:layout_below="@id/emailRegisterView"
         android:inputType="textEmailAddress"
+        android:textColor="@color/text_primary"
+        android:backgroundTint="@color/moustard_gold_dark"
         />
 
     <TextView
@@ -103,6 +107,8 @@
         android:id="@+id/numberRegisterInput"
         android:layout_below="@id/numberRegisterView"
         android:inputType="number"
+        android:textColor="@color/text_primary"
+        android:backgroundTint="@color/moustard_gold_dark"
         />
 
     <TextView
@@ -123,6 +129,8 @@
         android:id="@+id/passwordRegisterInput"
         android:layout_below="@id/passwordRegisterView"
         android:inputType="textPassword"
+        android:textColor="@color/text_primary"
+        android:backgroundTint="@color/moustard_gold_dark"
         />
 
     <TextView
@@ -143,6 +151,8 @@
         android:id="@+id/passwordConfirmRegisterInput"
         android:layout_below="@id/passwordConfirmRegisterView"
         android:inputType="textPassword"
+        android:textColor="@color/text_primary"
+        android:backgroundTint="@color/moustard_gold_dark"
         />
 
     <TextView

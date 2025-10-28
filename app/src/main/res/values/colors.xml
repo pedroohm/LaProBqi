@@ -5,6 +5,9 @@
     <color name="red_brown">#872D2D</color>
     <color name="moustard_gold">#B79B2E</color>
     <color name="gray">#888888</color>
+    <!-- Darker variants for input legibility -->
+    <color name="moustard_gold_dark">#8F6F18</color>
+    <color name="input_hint">#666666</color>
     
     <!-- Cores para status de equipamentos -->
     <color name="status_disponivel">#4CAF50</color>

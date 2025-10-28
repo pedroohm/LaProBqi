@@ -1,4 +1,4 @@
-package com.pedromoura.laprobqi;
+package com.pedromoura.laprobqi.adapters;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -12,6 +12,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.pedromoura.laprobqi.BancoDadosProduto;
+import com.pedromoura.laprobqi.Produto;
+import com.pedromoura.laprobqi.R;
 
 import java.util.List;
 

@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.pedromoura.laprobqi.BancoDadosProduto;
 import com.pedromoura.laprobqi.Produto;
-import com.pedromoura.laprobqi.ProdutoTabelaAdapter;
+import com.pedromoura.laprobqi.adapters.ProdutoTabelaAdapter;
 import com.pedromoura.laprobqi.R;
 
 import java.util.ArrayList;

@@ -71,10 +71,11 @@
         android:layout_height="48dp"
         android:layout_below="@id/linearComponent"
         android:layout_marginTop="150dp"
-        android:backgroundTint="#B79B2E"
+        android:backgroundTint="@color/moustard_gold_dark"
         android:hint="@string/email"
         android:padding="12dp"
-        android:textColorHint="@color/gray" />
+        android:textColor="@color/text_primary"
+        android:textColorHint="@color/input_hint" />
 
     <EditText
         android:id="@+id/inputSenha"
@@ -82,11 +83,12 @@
         android:layout_height="48dp"
         android:layout_below="@id/inputLogin"
         android:layout_marginTop="16dp"
-        android:backgroundTint="#B79B2E"
+        android:backgroundTint="@color/moustard_gold_dark"
         android:hint="@string/password"
         android:inputType="textPassword"
         android:padding="12dp"
-        android:textColorHint="@color/gray" />
+        android:textColor="@color/text_primary"
+        android:textColorHint="@color/input_hint" />
 
     <Button
         android:id="@+id/btnEntrar"

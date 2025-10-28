@@ -37,6 +37,8 @@
                 android:hint="Buscar equipamentos..."
                 android:padding="12dp"
                 android:background="@drawable/edit_text_background"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/input_hint"
                 android:layout_marginEnd="8dp" />
 
             <Button

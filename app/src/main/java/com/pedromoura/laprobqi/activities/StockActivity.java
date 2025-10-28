@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.pedromoura.laprobqi.BancoDadosProduto;
 import com.pedromoura.laprobqi.Produto;
-import com.pedromoura.laprobqi.ProdutoAdapter;
+import com.pedromoura.laprobqi.adapters.ProdutoAdapter;
 import com.pedromoura.laprobqi.R;
 
 import java.util.ArrayList;
