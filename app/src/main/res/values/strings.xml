@@ -44,5 +44,7 @@
 
     <!-- Description of elements -->
     <string name="config">Configurações</string>
+    <string name="toggle_password_visibility">Mostrar/Ocultar senha</string>
+    <string name="logo_description">Logo do aplicativo</string>
 
 </resources>

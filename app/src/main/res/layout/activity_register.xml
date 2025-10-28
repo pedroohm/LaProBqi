@@ -23,7 +23,8 @@
             android:id="@+id/miniLogo"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@drawable/logo" />
+            android:src="@drawable/logo"
+            android:contentDescription="@string/logo_description" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -134,6 +135,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/passwordRegisterInput"
             android:inputType="textPassword"
+            android:autofillHints="password"
+            android:paddingStart="12dp"
             android:paddingEnd="48dp"
             android:textColor="@color/text_primary"
             android:backgroundTint="@color/moustard_gold_dark"
@@ -148,7 +151,7 @@
             android:layout_marginEnd="4dp"
             android:padding="8dp"
             android:src="@android:drawable/ic_secure"
-            android:contentDescription="Mostrar/Ocultar senha"
+            android:contentDescription="@string/toggle_password_visibility"
             android:clickable="true"
             android:focusable="true"
             android:background="?attr/selectableItemBackgroundBorderless" />
@@ -178,6 +181,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/passwordConfirmRegisterInput"
             android:inputType="textPassword"
+            android:autofillHints="password"
+            android:paddingStart="12dp"
             android:paddingEnd="48dp"
             android:textColor="@color/text_primary"
             android:backgroundTint="@color/moustard_gold_dark"
@@ -192,7 +197,7 @@
             android:layout_marginEnd="4dp"
             android:padding="8dp"
             android:src="@android:drawable/ic_secure"
-            android:contentDescription="Mostrar/Ocultar senha"
+            android:contentDescription="@string/toggle_password_visibility"
             android:clickable="true"
             android:focusable="true"
             android:background="?attr/selectableItemBackgroundBorderless" />

@@ -45,5 +45,7 @@
 
     <!-- Description of elements -->
     <string name="config">Settings</string>
+    <string name="toggle_password_visibility">Show/Hide password</string>
+    <string name="logo_description">Application logo</string>
 
 </resources>
