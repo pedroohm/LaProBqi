@@ -29,6 +29,10 @@
     <string name="save_settings">Salvar Configurações</string>
     <string name="portuguese">Português (Brasil)</string>
     <string name="english">English</string>
+    <string name="user_profile">Perfil do Usuário</string>
+    <string name="access_level">Nível de Acesso:</string>
+    <string name="level_coordinator">Coordenador</string>
+    <string name="level_student">Aluno</string>
 
     <!-- CHECKIN CHECKOUT SCREEN -->
     <string name="chekin">CHECK IN</string>

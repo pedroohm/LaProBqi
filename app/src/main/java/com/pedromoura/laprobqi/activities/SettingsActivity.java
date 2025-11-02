@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -24,6 +25,7 @@ public class SettingsActivity extends Activity {
 
     private RadioGroup radioGroupLanguage;
     private RadioButton radioPortuguese, radioEnglish;
+    private TextView textUserName, textUserLevel;
     private SharedPreferences prefs;
     private UsuarioRepository usuarioRepository;
     private static final String PREF_LANGUAGE = "app_language";
@@ -35,6 +37,7 @@ public class SettingsActivity extends Activity {
         setContentView(R.layout.activity_settings);
         
         initializeViews();
+        loadUserProfile(); // RF02: Carregar perfil do usuário
         loadLanguageSettings();
     }
 
@@ -42,9 +45,32 @@ public class SettingsActivity extends Activity {
         radioGroupLanguage = findViewById(R.id.radioGroupLanguage);
         radioPortuguese = findViewById(R.id.radioPortuguese);
         radioEnglish = findViewById(R.id.radioEnglish);
+        textUserName = findViewById(R.id.textUserName);
+        textUserLevel = findViewById(R.id.textUserLevel);
         
         prefs = getSharedPreferences("app_settings", MODE_PRIVATE);
         usuarioRepository = RepositoryProvider.getInstance(this).getUsuarioRepository();
+    }
+
+    // RF02: Carregar e exibir informações do perfil do usuário
+    private void loadUserProfile() {
+        usuarioRepository.obterUsuarioAtual(usuario -> {
+            if (usuario != null) {
+                textUserName.setText("Usuário: " + usuario.getNome());
+                
+                // Exibir nível de acesso com cores diferentes
+                if (usuario.isCoordenador()) {
+                    textUserLevel.setText(R.string.level_coordinator);
+                    textUserLevel.setTextColor(getResources().getColor(R.color.red_brown));
+                } else {
+                    textUserLevel.setText(R.string.level_student);
+                    textUserLevel.setTextColor(getResources().getColor(R.color.moustard_gold));
+                }
+            } else {
+                textUserName.setText("Usuário: Não identificado");
+                textUserLevel.setText("-");
+            }
+        });
     }
 
     private void loadLanguageSettings() {

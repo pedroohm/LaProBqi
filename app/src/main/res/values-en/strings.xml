@@ -30,6 +30,10 @@
     <string name="save_settings">Save Settings</string>
     <string name="portuguese">Português (Brasil)</string>
     <string name="english">English</string>
+    <string name="user_profile">User Profile</string>
+    <string name="access_level">Access Level:</string>
+    <string name="level_coordinator">Coordinator</string>
+    <string name="level_student">Student</string>
 
     <!-- CHECKIN CHECKOUT SCREEN -->
     <string name="chekin">CHECK IN</string>

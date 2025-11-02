@@ -27,6 +27,8 @@ public class StockOptionsActivity extends AppCompatActivity {
         Button btnRegisterEntry = findViewById(R.id.btnRegisterEntry);
         Button btnRegisterExit = findViewById(R.id.btnRegisterExit);
 
+        // Botões de entrada e saída disponíveis para todos os usuários
+
         btnRegisterEntry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

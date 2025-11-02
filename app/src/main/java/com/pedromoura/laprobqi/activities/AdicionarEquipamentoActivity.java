@@ -14,7 +14,7 @@ import com.pedromoura.laprobqi.di.RepositoryProvider;
 import com.pedromoura.laprobqi.models.Equipamento;
 import com.pedromoura.laprobqi.models.Usuario;
 import com.pedromoura.laprobqi.repository.EquipamentoRepository;
-import com.pedromoura.laprobqi.repository.UsuarioRepository;
+import com.pedromoura.laprobqi.utils.PermissionHelper;
 
 public class AdicionarEquipamentoActivity extends AppCompatActivity {
 
@@ -23,7 +23,6 @@ public class AdicionarEquipamentoActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     
     private EquipamentoRepository equipamentoRepository;
-    private UsuarioRepository usuarioRepository;
     private Usuario usuarioAtual;
 
     @Override
@@ -31,15 +30,26 @@ public class AdicionarEquipamentoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_adicionar_equipamento);
 
-        // Inicializar repositories
+        // RF02: Verificar permissão de coordenador ANTES de inicializar
+        PermissionHelper.verificarPermissaoOuFechar(this, 
+            "Apenas coordenadores podem adicionar equipamentos", 
+            usuario -> {
+                usuarioAtual = usuario;
+                inicializarActivity();
+            });
+
+        editTextNome = findViewById(R.id.editTextNome);
+        editTextDescricao = findViewById(R.id.editTextDescricao);
+        btnSalvar = findViewById(R.id.btnSalvar);
+        btnCancelar = findViewById(R.id.btnCancelar);
+    }
+
+    private void inicializarActivity() {
+        // Inicializar repository
         equipamentoRepository = RepositoryProvider.getInstance(this).getEquipamentoRepository();
-        usuarioRepository = RepositoryProvider.getInstance(this).getUsuarioRepository();
 
         // Inicializar views
         inicializarViews();
-        
-        // Verificar permissões
-        verificarPermissoes();
     }
 
     private void inicializarViews() {
@@ -52,16 +62,6 @@ public class AdicionarEquipamentoActivity extends AppCompatActivity {
         // Configurar listeners
         btnSalvar.setOnClickListener(v -> salvarEquipamento());
         btnCancelar.setOnClickListener(v -> finish());
-    }
-
-    private void verificarPermissoes() {
-        usuarioRepository.obterUsuarioAtual(usuario -> {
-            usuarioAtual = usuario;
-            if (usuario == null || !usuario.isCoordenador()) {
-                showToast("Apenas coordenadores podem adicionar equipamentos");
-                finish();
-            }
-        });
     }
 
     private void salvarEquipamento() {

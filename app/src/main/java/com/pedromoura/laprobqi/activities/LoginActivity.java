@@ -107,7 +107,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void navegarParaMenuInicial(String userName) {
-        showToast("Bem-vindo, " + userName + "!");
+        showToast("Bem-vindo(A), " + userName + "!");
         Intent intent = new Intent(this, InitialMenuActivity.class);
         startActivity(intent);
         finish();

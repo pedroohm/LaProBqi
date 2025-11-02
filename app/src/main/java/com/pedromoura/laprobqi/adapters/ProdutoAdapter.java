@@ -2,6 +2,7 @@ package com.pedromoura.laprobqi.adapters;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,10 @@ import com.pedromoura.laprobqi.BancoDadosProduto;
 import com.pedromoura.laprobqi.Produto;
 import com.pedromoura.laprobqi.R;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.List;
+import java.util.Locale;
 
 public class ProdutoAdapter extends RecyclerView.Adapter<ProdutoAdapter.ProdutoViewHolder> {
 
@@ -25,12 +29,40 @@ public class ProdutoAdapter extends RecyclerView.Adapter<ProdutoAdapter.ProdutoV
     private Context context;
     private BancoDadosProduto banco;
     private boolean isExitMode; // true = exit mode, false = entry mode
+    
+    // Formatador para exibir números com vírgula e no máximo 3 casas decimais
+    private static final DecimalFormat decimalFormat;
+    
+    static {
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale("pt", "BR"));
+        symbols.setDecimalSeparator(',');
+        symbols.setGroupingSeparator('.');
+        decimalFormat = new DecimalFormat("#,##0.###", symbols);
+        decimalFormat.setMaximumFractionDigits(3);
+        decimalFormat.setMinimumFractionDigits(0);
+    }
 
     public ProdutoAdapter(List<Produto> produtos, Context context, boolean isExitMode) {
         this.produtos = produtos;
         this.context = context;
         this.banco = BancoDadosProduto.getInstancia(context);
         this.isExitMode = isExitMode;
+    }
+    
+    /**
+     * Formata um número com vírgula como separador decimal e no máximo 3 casas
+     */
+    private static String formatarNumero(double valor) {
+        return decimalFormat.format(valor);
+    }
+    
+    /**
+     * Converte string com vírgula para double
+     */
+    private static double parseNumero(String texto) throws NumberFormatException {
+        // Substitui vírgula por ponto para fazer o parse
+        String textoNormalizado = texto.trim().replace(',', '.');
+        return Double.parseDouble(textoNormalizado);
     }
 
     public void setExitMode(boolean exitMode) {
@@ -80,6 +112,7 @@ public class ProdutoAdapter extends RecyclerView.Adapter<ProdutoAdapter.ProdutoV
         private void setupButtons() {
             // Modo estoque: botões para adicionar e remover quantidade
             if (isExitMode) {
+                // Modo EXIT: qualquer usuário pode remover (retirar do estoque)
                 btnAdicionar.setVisibility(View.GONE);
                 btnRemover.setVisibility(View.VISIBLE);
                 btnRemover.setText("-");
@@ -141,15 +174,20 @@ public class ProdutoAdapter extends RecyclerView.Adapter<ProdutoAdapter.ProdutoV
             EditText editQuantidade = dialogView.findViewById(R.id.editQuantidade);
             TextView txtTitulo = dialogView.findViewById(R.id.txtTitulo);
             
+            // Configurar EditText para aceitar números decimais
+            editQuantidade.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+            
             String acao = adicionar ? "Adicionar" : "Remover";
             txtTitulo.setText(acao + " quantidade - " + produto.getNome());
-            editQuantidade.setHint("Quantidade a " + acao.toLowerCase());
+            editQuantidade.setHint("Quantidade a " + acao.toLowerCase() + " (use vírgula)");
 
             new AlertDialog.Builder(context)
                 .setView(dialogView)
                 .setPositiveButton(acao, (dialog, which) -> {
                     try {
-                        double quantidade = Double.parseDouble(editQuantidade.getText().toString());
+                        // Usar o método parseNumero que aceita vírgula
+                        double quantidade = parseNumero(editQuantidade.getText().toString());
+                        
                         if (quantidade <= 0) {
                             Toast.makeText(context, "Quantidade deve ser maior que zero", Toast.LENGTH_SHORT).show();
                             return;
@@ -170,12 +208,13 @@ public class ProdutoAdapter extends RecyclerView.Adapter<ProdutoAdapter.ProdutoV
                         banco.atualizarProduto(produto);
                         notifyItemChanged(getAdapterPosition());
                         
-                        String mensagem = acao + " " + quantidade + " " + produto.getUnidade() + 
-                                        " de " + produto.getNome() + ". Novo total: " + novaQuantidade + " " + produto.getUnidade();
+                        // Exibir mensagem com formatação brasileira (vírgula)
+                        String mensagem = acao + " " + formatarNumero(quantidade) + " " + produto.getUnidade() + 
+                                        " de " + produto.getNome() + ". Novo total: " + formatarNumero(novaQuantidade) + " " + produto.getUnidade();
                         Toast.makeText(context, mensagem, Toast.LENGTH_LONG).show();
                         
                     } catch (NumberFormatException e) {
-                        Toast.makeText(context, "Digite uma quantidade válida", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Digite uma quantidade válida (use vírgula para decimais)", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .setNegativeButton("Cancelar", null)
@@ -185,7 +224,8 @@ public class ProdutoAdapter extends RecyclerView.Adapter<ProdutoAdapter.ProdutoV
         public void bind(Produto produto) {
             txtNome.setText("Nome: " + produto.getNome());
             txtTipo.setText("Tipo: " + produto.getTipo());
-            txtQuantidade.setText("Quantidade: " + produto.getQuantidade() + " " + produto.getUnidade());
+            // Exibir quantidade com formatação brasileira (vírgula, máx 3 decimais)
+            txtQuantidade.setText("Quantidade: " + formatarNumero(produto.getQuantidade()) + " " + produto.getUnidade());
             txtValidade.setText("Validade: " + produto.getValidade());
             txtObservacoes.setText("Obs: " + produto.getObservacoes());
 

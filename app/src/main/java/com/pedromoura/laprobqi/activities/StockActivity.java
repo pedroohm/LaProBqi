@@ -37,18 +37,23 @@ public class StockActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_stock);
         
+        // Get the action from the intent
+        action = getIntent().getStringExtra("ACTION");
+        if (action == null) {
+            action = "ENTRY"; // Default action
+        }
+
+        // Inicializar activity - tanto ENTRY quanto EXIT são permitidos para todos os usuários
+        inicializarActivity();
+    }
+
+    private void inicializarActivity() {
         // Configurar header
         ImageView configLogo = findViewById(R.id.configLogo);
         configLogo.setOnClickListener(v -> {
             Intent intent = new Intent(StockActivity.this, SettingsActivity.class);
             startActivity(intent);
         });
-        
-        // Get the action from the intent
-        action = getIntent().getStringExtra("ACTION");
-        if (action == null) {
-            action = "ENTRY"; // Default action
-        }
 
         banco = BancoDadosProduto.getInstancia(this);
         

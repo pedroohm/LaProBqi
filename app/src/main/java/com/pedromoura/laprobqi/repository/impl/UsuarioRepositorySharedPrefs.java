@@ -24,8 +24,8 @@ public class UsuarioRepositorySharedPrefs implements UsuarioRepository {
     private final Handler mainHandler;
 
     // Regex para validação de senha: mínimo 8 caracteres, uma maiúscula e um número
-    private static final Pattern PASSWORD_PATTERN =
-            Pattern.compile("^(?=.*[A-Z])(?=.*\\d).{8,}$");
+    //private static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[A-Z])(?=.*\\d).{8,}$");
+    private static final Pattern PASSWORD_PATTERN = Pattern.compile("^[a-zA-Z0-9]+$");
 
     public UsuarioRepositorySharedPrefs(Context context) {
         this.prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
