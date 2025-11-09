@@ -15,7 +15,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     
     // Nome e versão do banco de dados
     private static final String DATABASE_NAME = "laprobqi.db";
-    private static final int DATABASE_VERSION = 4; // Mudança: id de equipamentos agora é INTEGER AUTOINCREMENT
+    private static final int DATABASE_VERSION = 5; // Mudança: id de equipamentos agora é INTEGER AUTOINCREMENT
     
     // Singleton
     private static DatabaseHelper instance;
