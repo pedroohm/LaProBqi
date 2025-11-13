@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "816890083517",
+    "project_id": "laprobqi-app",
+    "storage_bucket": "laprobqi-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:816890083517:android:2eeb245ab2cc17eb4a5fd4",
+        "android_client_info": {
+          "package_name": "com.pedromoura.laprobqi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAScP1wdX3jSGC7wMjpWzVwXCGWkdy1CHI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
