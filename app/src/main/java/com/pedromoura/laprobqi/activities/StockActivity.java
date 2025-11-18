@@ -7,16 +7,18 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.pedromoura.laprobqi.BancoDadosProduto;
 import com.pedromoura.laprobqi.Produto;
 import com.pedromoura.laprobqi.adapters.ProdutoAdapter;
 import com.pedromoura.laprobqi.R;
+import com.pedromoura.laprobqi.di.RepositoryProvider;
+import com.pedromoura.laprobqi.repository.ProdutoRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +27,7 @@ public class StockActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private ProdutoAdapter adapter;
-    private BancoDadosProduto banco;
+    private ProdutoRepository produtoRepository;
     private EditText editPesquisa;
     private List<Produto> todosProdutos;
     private List<Produto> produtosFiltrados;
@@ -55,7 +57,7 @@ public class StockActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        banco = BancoDadosProduto.getInstancia(this);
+        produtoRepository = RepositoryProvider.getInstance(this).getProdutoRepository();
         
         recyclerView = findViewById(R.id.recyclerViewEstoque);
         editPesquisa = findViewById(R.id.editPesquisa);
@@ -88,21 +90,26 @@ public class StockActivity extends AppCompatActivity {
     }
     
     private void carregarEstoque() {
-        todosProdutos = banco.listarProdutos();
-        
-        if ("EXIT".equals(action)) {
-            // Filtra apenas produtos com quantidade > 0 para o modo de saída
-            List<Produto> produtosComEstoque = new ArrayList<>();
-            for (Produto produto : todosProdutos) {
-                if (produto.getQuantidade() > 0) {
-                    produtosComEstoque.add(produto);
+        produtoRepository.listarProdutos(new ProdutoRepository.OnSuccessListener<List<Produto>>() {
+            @Override
+            public void onSuccess(List<Produto> produtos) {
+                todosProdutos.clear();
+                
+                if ("EXIT".equals(action)) {
+                    // Filtra apenas produtos com quantidade > 0 para o modo de saída
+                    for (Produto produto : produtos) {
+                        if (produto.getQuantidade() > 0) {
+                            todosProdutos.add(produto);
+                        }
+                    }
+                } else {
+                    // Para o modo de entrada, mostra todos os produtos
+                    todosProdutos.addAll(produtos);
                 }
-            }
-            todosProdutos = produtosComEstoque;
-        }
-        // Para o modo de entrada, mostra todos os produtos
 
-        filtrarProdutos(editPesquisa.getText().toString());
+                filtrarProdutos(editPesquisa.getText().toString());
+            }
+        });
     }
     
     private void configurarPesquisa() {

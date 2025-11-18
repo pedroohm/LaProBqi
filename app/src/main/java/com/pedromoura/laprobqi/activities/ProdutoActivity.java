@@ -9,9 +9,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.pedromoura.laprobqi.BancoDadosProduto;
 import com.pedromoura.laprobqi.Produto;
 import com.pedromoura.laprobqi.R;
+import com.pedromoura.laprobqi.di.RepositoryProvider;
+import com.pedromoura.laprobqi.repository.ProdutoRepository;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -24,7 +25,7 @@ public class ProdutoActivity extends AppCompatActivity {
 
     private EditText editNome, editTipo, editValidade, editQuantidade, editUnidade, editObs;
     private TextView textLista;
-    private BancoDadosProduto banco;
+    private ProdutoRepository produtoRepository;
     private Calendar calendar;
     private SimpleDateFormat dateFormatter;
     
@@ -78,7 +79,7 @@ public class ProdutoActivity extends AppCompatActivity {
         editQuantidade.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         editQuantidade.setHint("Ex: 10,5 ou 100,25");
 
-        banco = BancoDadosProduto.getInstancia(this);
+        produtoRepository = RepositoryProvider.getInstance(this).getProdutoRepository();
         calendar = Calendar.getInstance();
         dateFormatter = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
@@ -149,15 +150,19 @@ public class ProdutoActivity extends AppCompatActivity {
             }
 
             Produto p = new Produto(nome, tipo, validade, quantidade, unidade, obs);
-            boolean sucesso = banco.inserirProduto(p);
-
-            if (sucesso) {
-                Toast.makeText(this, "✓ Produto salvo com sucesso!", Toast.LENGTH_SHORT).show();
-                limparCampos();
-                listarProdutos();
-            } else {
-                Toast.makeText(this, "✗ Erro ao salvar produto", Toast.LENGTH_SHORT).show();
-            }
+            
+            produtoRepository.adicionarProduto(p, new ProdutoRepository.OnCompleteListener() {
+                @Override
+                public void onComplete(boolean sucesso, String mensagem) {
+                    if (sucesso) {
+                        Toast.makeText(ProdutoActivity.this, "✓ Produto salvo com sucesso!", Toast.LENGTH_SHORT).show();
+                        limparCampos();
+                        listarProdutos();
+                    } else {
+                        Toast.makeText(ProdutoActivity.this, "✗ Erro ao salvar produto: " + mensagem, Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
 
         } catch (NumberFormatException e) {
             editQuantidade.setError("Quantidade inválida (use vírgula para decimais, ex: 10,5)");
@@ -165,23 +170,27 @@ public class ProdutoActivity extends AppCompatActivity {
     }
 
     private void listarProdutos() {
-        List<Produto> produtos = banco.listarProdutos();
-        if (produtos.isEmpty()) {
-            textLista.setText("Nenhum produto cadastrado.");
-            return;
-        }
+        produtoRepository.listarProdutos(new ProdutoRepository.OnSuccessListener<List<Produto>>() {
+            @Override
+            public void onSuccess(List<Produto> produtos) {
+                if (produtos.isEmpty()) {
+                    textLista.setText("Nenhum produto cadastrado.");
+                    return;
+                }
 
-        StringBuilder texto = new StringBuilder();
-        for (Produto p : produtos) {
-            texto.append("ID: ").append(p.getId()).append("\n");
-            texto.append("Nome: ").append(p.getNome()).append("\n");
-            texto.append("Tipo: ").append(p.getTipo()).append("\n");
-            texto.append("Validade: ").append(p.getValidade()).append("\n");
-            // Exibir quantidade com formatação brasileira (vírgula, máx 3 decimais)
-            texto.append("Quantidade: ").append(formatarNumero(p.getQuantidade())).append(" ").append(p.getUnidade()).append("\n");
-            texto.append("Obs: ").append(p.getObservacoes()).append("\n\n");
-        }
-        textLista.setText(texto.toString());
+                StringBuilder texto = new StringBuilder();
+                for (Produto p : produtos) {
+                    texto.append("ID: ").append(p.getId()).append("\n");
+                    texto.append("Nome: ").append(p.getNome()).append("\n");
+                    texto.append("Tipo: ").append(p.getTipo()).append("\n");
+                    texto.append("Validade: ").append(p.getValidade()).append("\n");
+                    // Exibir quantidade com formatação brasileira (vírgula, máx 3 decimais)
+                    texto.append("Quantidade: ").append(formatarNumero(p.getQuantidade())).append(" ").append(p.getUnidade()).append("\n");
+                    texto.append("Obs: ").append(p.getObservacoes()).append("\n\n");
+                }
+                textLista.setText(texto.toString());
+            }
+        });
     }
 
     private void limparCampos() {
