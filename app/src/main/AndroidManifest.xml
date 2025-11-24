@@ -64,6 +64,12 @@
         <activity
             android:name=".activities.MinhasReservasActivity"
             android:exported="false" />
+        <activity
+            android:name=".activities.DocumentosActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ConfigurarDocumentosActivity"
+            android:exported="false" />
     </application>
 
     <queries>

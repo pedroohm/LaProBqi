@@ -32,8 +32,8 @@ public class InitialMenuActivity extends Activity {
     }
 
     public void clickPopsAndGuides(View view) {
-        // TODO: Implementar acesso a POPs e manuais
-        Toast.makeText(this, "Acesso a POPs e Manuais em desenvolvimento", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, DocumentosActivity.class);
+        startActivity(intent);
     }
 
     public void clickScheduleEquip(View view) {

@@ -107,6 +107,9 @@ public class ProdutoRepositoryFirestore implements ProdutoRepository {
     /**
      * Atualiza um produto existente.
      * 
+     * IMPORTANTE: O ID do produto no app é gerado via hashCode() do documentId do Firestore.
+     * Para atualizar, precisamos buscar todos os produtos e encontrar o que tem o mesmo ID.
+     * 
      * @param produto Produto com dados atualizados
      * @param listener Callback de resultado
      */
@@ -117,25 +120,38 @@ public class ProdutoRepositoryFirestore implements ProdutoRepository {
             return;
         }
         
-        // Buscar o documento no Firestore usando query pelo campo id
+        // Buscar TODOS os produtos para encontrar o document ID correto
+        // (porque o ID do produto é o hashCode do documentId)
         firestore.collection(COLLECTION_PRODUTOS)
-            .whereEqualTo("id", produto.getId())
             .get()
             .addOnSuccessListener(queryDocumentSnapshots -> {
-                if (queryDocumentSnapshots.isEmpty()) {
-                    listener.onComplete(false, "Produto não encontrado");
+                String documentIdParaAtualizar = null;
+                
+                // Procurar o documento cujo ID.hashCode() == produto.getId()
+                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                    int docIdHash = doc.getId().hashCode();
+                    if (docIdHash == produto.getId()) {
+                        documentIdParaAtualizar = doc.getId();
+                        break;
+                    }
+                }
+                
+                if (documentIdParaAtualizar == null) {
+                    Log.e(TAG, "Documento não encontrado para produto ID: " + produto.getId());
+                    listener.onComplete(false, "Produto não encontrado no Firebase");
                     return;
                 }
                 
-                // Pegar o primeiro documento encontrado
-                String documentId = queryDocumentSnapshots.getDocuments().get(0).getId();
+                // Atualizar o documento encontrado (usar variável final para lambda)
+                final String docId = documentIdParaAtualizar;
                 Map<String, Object> produtoData = produtoToMap(produto);
                 
                 firestore.collection(COLLECTION_PRODUTOS)
-                    .document(documentId)
+                    .document(docId)
                     .set(produtoData)
                     .addOnSuccessListener(aVoid -> {
-                        Log.d(TAG, "Produto atualizado com sucesso: " + produto.getId());
+                        Log.d(TAG, "Produto atualizado com sucesso: ID=" + produto.getId() + 
+                              ", DocID=" + docId);
                         listener.onComplete(true, "Produto atualizado com sucesso");
                     })
                     .addOnFailureListener(e -> {
@@ -144,7 +160,7 @@ public class ProdutoRepositoryFirestore implements ProdutoRepository {
                     });
             })
             .addOnFailureListener(e -> {
-                Log.e(TAG, "Erro ao buscar produto para atualização", e);
+                Log.e(TAG, "Erro ao buscar produtos", e);
                 listener.onComplete(false, "Erro ao buscar produto: " + e.getMessage());
             });
     }
@@ -152,7 +168,10 @@ public class ProdutoRepositoryFirestore implements ProdutoRepository {
     /**
      * Remove um produto por ID.
      * 
-     * @param id ID do produto (campo id do modelo, não document ID)
+     * IMPORTANTE: O ID do produto no app é gerado via hashCode() do documentId do Firestore.
+     * Para remover, precisamos buscar todos os produtos e encontrar o que tem o mesmo ID.
+     * 
+     * @param id ID do produto (gerado via hashCode do document ID)
      * @param listener Callback de resultado
      */
     @Override
@@ -162,24 +181,36 @@ public class ProdutoRepositoryFirestore implements ProdutoRepository {
             return;
         }
         
-        // Buscar o documento no Firestore usando query pelo campo id
+        // Buscar TODOS os produtos para encontrar o document ID correto
         firestore.collection(COLLECTION_PRODUTOS)
-            .whereEqualTo("id", id)
             .get()
             .addOnSuccessListener(queryDocumentSnapshots -> {
-                if (queryDocumentSnapshots.isEmpty()) {
+                String documentIdParaRemover = null;
+                
+                // Procurar o documento cujo ID.hashCode() == id
+                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                    int docIdHash = doc.getId().hashCode();
+                    if (docIdHash == id) {
+                        documentIdParaRemover = doc.getId();
+                        break;
+                    }
+                }
+                
+                if (documentIdParaRemover == null) {
+                    Log.e(TAG, "Documento não encontrado para produto ID: " + id);
                     listener.onComplete(false, "Produto não encontrado");
                     return;
                 }
                 
-                // Deletar o primeiro documento encontrado
-                String documentId = queryDocumentSnapshots.getDocuments().get(0).getId();
+                // Deletar o documento encontrado (usar variável final para lambda)
+                final String docId = documentIdParaRemover;
                 
                 firestore.collection(COLLECTION_PRODUTOS)
-                    .document(documentId)
+                    .document(docId)
                     .delete()
                     .addOnSuccessListener(aVoid -> {
-                        Log.d(TAG, "Produto removido com sucesso: " + id);
+                        Log.d(TAG, "Produto removido com sucesso: ID=" + id + 
+                              ", DocID=" + docId);
                         listener.onComplete(true, "Produto removido com sucesso");
                     })
                     .addOnFailureListener(e -> {
