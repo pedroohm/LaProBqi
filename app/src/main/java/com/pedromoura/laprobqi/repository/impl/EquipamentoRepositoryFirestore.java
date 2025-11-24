@@ -313,6 +313,35 @@ public class EquipamentoRepositoryFirestore implements EquipamentoRepository {
     }
     
     /**
+     * Bloqueia ou desbloqueia um equipamento para manutenção.
+     * Equipamentos em manutenção não podem ser reservados.
+     * 
+     * @param equipamentoId ID do equipamento
+     * @param bloquear true para bloquear, false para desbloquear
+     * @param listener Callback de resultado
+     */
+    @Override
+    public void bloquearParaManutencao(String equipamentoId, boolean bloquear, OnBooleanListener listener) {
+        if (equipamentoId == null || equipamentoId.trim().isEmpty()) {
+            listener.onFailure("ID do equipamento não pode estar vazio");
+            return;
+        }
+        
+        firestore.collection(COLLECTION_EQUIPAMENTOS)
+            .document(equipamentoId)
+            .update("emManutencao", bloquear)
+            .addOnSuccessListener(aVoid -> {
+                String acao = bloquear ? "bloqueado" : "desbloqueado";
+                Log.d(TAG, "Equipamento " + acao + " para manutenção: " + equipamentoId);
+                listener.onSuccess(true);
+            })
+            .addOnFailureListener(e -> {
+                Log.e(TAG, "Erro ao atualizar status de manutenção", e);
+                listener.onFailure("Erro ao atualizar: " + e.getMessage());
+            });
+    }
+    
+    /**
      * Converte um objeto Equipamento para Map do Firestore.
      * Realiza a conversão de datas String -> Timestamp.
      * 
@@ -328,6 +357,7 @@ public class EquipamentoRepositoryFirestore implements EquipamentoRepository {
         data.put("nome", equipamento.getNome());
         data.put("descricao", equipamento.getDescricao());
         data.put("status", equipamento.getStatus());
+        data.put("emManutencao", equipamento.isEmManutencao());
         
         // Converter dataCriacao: String -> Timestamp
         if (equipamento.getDataCriacao() != null && !equipamento.getDataCriacao().isEmpty()) {
@@ -359,6 +389,10 @@ public class EquipamentoRepositoryFirestore implements EquipamentoRepository {
         equipamento.setNome(document.getString("nome"));
         equipamento.setDescricao(document.getString("descricao"));
         equipamento.setStatus(document.getString("status"));
+        
+        // Campo emManutencao (pode ser null em documentos antigos)
+        Boolean emManutencao = document.getBoolean("emManutencao");
+        equipamento.setEmManutencao(emManutencao != null ? emManutencao : false);
         
         // Converter dataCriacao: Timestamp -> String
         Timestamp dataCriacaoTimestamp = document.getTimestamp("dataCriacao");

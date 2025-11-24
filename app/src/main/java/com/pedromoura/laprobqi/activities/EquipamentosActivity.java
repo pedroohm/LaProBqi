@@ -122,7 +122,20 @@ public class EquipamentosActivity extends AppCompatActivity {
             @Override
             public void onSuccess(List<Equipamento> equipamentosList) {
                 progressBar.setVisibility(View.GONE);
-                equipamentos = equipamentosList;
+                
+                // Filtrar equipamentos em manutenção para não-coordenadores
+                if (usuarioAtual != null && !usuarioAtual.isCoordenador()) {
+                    List<Equipamento> equipamentosFiltrados = new ArrayList<>();
+                    for (Equipamento eq : equipamentosList) {
+                        if (!eq.isEmManutencao()) {
+                            equipamentosFiltrados.add(eq);
+                        }
+                    }
+                    equipamentos = equipamentosFiltrados;
+                } else {
+                    equipamentos = equipamentosList;
+                }
+                
                 atualizarLista();
             }
 
@@ -144,7 +157,20 @@ public class EquipamentosActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(List<Equipamento> equipamentosList) {
                     progressBar.setVisibility(View.GONE);
-                    equipamentos = equipamentosList;
+                    
+                    // Filtrar equipamentos em manutenção para não-coordenadores
+                    if (usuarioAtual != null && !usuarioAtual.isCoordenador()) {
+                        List<Equipamento> equipamentosFiltrados = new ArrayList<>();
+                        for (Equipamento eq : equipamentosList) {
+                            if (!eq.isEmManutencao()) {
+                                equipamentosFiltrados.add(eq);
+                            }
+                        }
+                        equipamentos = equipamentosFiltrados;
+                    } else {
+                        equipamentos = equipamentosList;
+                    }
+                    
                     atualizarLista();
                 }
 

@@ -4,11 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.pedromoura.laprobqi.R;
 import com.pedromoura.laprobqi.di.RepositoryProvider;
 import com.pedromoura.laprobqi.models.Equipamento;
@@ -19,7 +22,9 @@ import com.pedromoura.laprobqi.repository.UsuarioRepository;
 public class DetalhesEquipamentoActivity extends AppCompatActivity {
 
     private TextView textViewNome, textViewDescricao, textViewStatus;
-    private Button btnReservar, btnIniciarUso, btnFinalizarUso, btnVoltar;
+    private Button btnReservar, btnIniciarUso, btnFinalizarUso, btnVoltar, btnExcluir;
+    private SwitchMaterial switchManutencao;
+    private View layoutCoordenador;
     
     private Equipamento equipamento;
     private Usuario usuarioAtual;
@@ -61,17 +66,39 @@ public class DetalhesEquipamentoActivity extends AppCompatActivity {
         btnIniciarUso = findViewById(R.id.btnIniciarUso);
         btnFinalizarUso = findViewById(R.id.btnFinalizarUso);
         btnVoltar = findViewById(R.id.btnVoltar);
+        
+        // Controles de coordenador
+        layoutCoordenador = findViewById(R.id.layoutCoordenador);
+        switchManutencao = findViewById(R.id.switchManutencao);
+        btnExcluir = findViewById(R.id.btnExcluir);
 
         // Configurar listeners
         btnReservar.setOnClickListener(v -> abrirTelaReservar());
         btnIniciarUso.setOnClickListener(v -> iniciarUso());
         btnFinalizarUso.setOnClickListener(v -> finalizarUso());
         btnVoltar.setOnClickListener(v -> finish());
+        
+        // Listeners de coordenador
+        switchManutencao.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (buttonView.isPressed()) { // Evita trigger no carregamento inicial
+                alternarManutencao(isChecked);
+            }
+        });
+        btnExcluir.setOnClickListener(v -> confirmarExclusao());
     }
 
     private void carregarUsuarioAtual() {
         usuarioRepository.obterUsuarioAtual(usuario -> {
             usuarioAtual = usuario;
+            
+            // Mostrar controles de coordenador apenas para coordenadores
+            if (usuario != null && usuario.isCoordenador()) {
+                layoutCoordenador.setVisibility(View.VISIBLE);
+                switchManutencao.setChecked(equipamento.isEmManutencao());
+            } else {
+                layoutCoordenador.setVisibility(View.GONE);
+            }
+            
             atualizarBotoes();
         });
     }
@@ -84,6 +111,14 @@ public class DetalhesEquipamentoActivity extends AppCompatActivity {
 
     private void atualizarBotoes() {
         if (usuarioAtual == null) return;
+
+        // Se equipamento está em manutenção, desabilita todos os botões de uso
+        if (equipamento.isEmManutencao()) {
+            btnReservar.setVisibility(View.GONE);
+            btnIniciarUso.setVisibility(View.GONE);
+            btnFinalizarUso.setVisibility(View.GONE);
+            return;
+        }
 
         // Lógica baseada no status do equipamento
         switch (equipamento.getStatus()) {
@@ -166,6 +201,79 @@ public class DetalhesEquipamentoActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(String mensagem) {
+                    showToast("Erro: " + mensagem);
+                }
+            });
+    }
+
+    /**
+     * Alterna o status de manutenção do equipamento.
+     */
+    private void alternarManutencao(boolean emManutencao) {
+        equipamentoRepository.bloquearParaManutencao(equipamento.getId(), emManutencao,
+            new EquipamentoRepository.OnBooleanListener() {
+                @Override
+                public void onSuccess(boolean success) {
+                    if (success) {
+                        equipamento.setEmManutencao(emManutencao);
+                        exibirDetalhes();
+                        atualizarBotoes();
+                        String mensagem = emManutencao ? 
+                            "Equipamento bloqueado para manutenção" : 
+                            "Equipamento desbloqueado";
+                        showToast(mensagem);
+                    } else {
+                        // Reverter switch se falhou
+                        switchManutencao.setChecked(!emManutencao);
+                        showToast("Erro ao atualizar status de manutenção");
+                    }
+                }
+
+                @Override
+                public void onFailure(String mensagem) {
+                    // Reverter switch se falhou
+                    switchManutencao.setChecked(!emManutencao);
+                    showToast("Erro: " + mensagem);
+                }
+            });
+    }
+
+    /**
+     * Confirma antes de excluir o equipamento.
+     */
+    private void confirmarExclusao() {
+        new AlertDialog.Builder(this)
+            .setTitle("Excluir Equipamento")
+            .setMessage("Tem certeza que deseja excluir este equipamento?\n\n" +
+                       "Esta ação não pode ser desfeita e todas as reservas associadas serão perdidas.")
+            .setPositiveButton("Excluir", (dialog, which) -> excluirEquipamento())
+            .setNegativeButton("Cancelar", null)
+            .setIcon(android.R.drawable.ic_dialog_alert)
+            .show();
+    }
+
+    /**
+     * Exclui o equipamento do Firebase.
+     */
+    private void excluirEquipamento() {
+        btnExcluir.setEnabled(false);
+        
+        equipamentoRepository.excluirEquipamento(equipamento.getId(),
+            new EquipamentoRepository.OnBooleanListener() {
+                @Override
+                public void onSuccess(boolean success) {
+                    if (success) {
+                        showToast("Equipamento excluído com sucesso");
+                        finish(); // Volta para a tela anterior
+                    } else {
+                        btnExcluir.setEnabled(true);
+                        showToast("Erro ao excluir equipamento");
+                    }
+                }
+
+                @Override
+                public void onFailure(String mensagem) {
+                    btnExcluir.setEnabled(true);
                     showToast("Erro: " + mensagem);
                 }
             });

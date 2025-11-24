@@ -111,7 +111,16 @@ public class ReservarEquipamentoActivity extends AppCompatActivity {
             @Override
             public void onSuccess(List<Equipamento> equipamentos) {
                 progressBar.setVisibility(View.GONE);
-                equipamentosDisponiveis = equipamentos;
+                
+                // Filtrar equipamentos disponíveis E não em manutenção
+                List<Equipamento> equipamentosFiltrados = new ArrayList<>();
+                for (Equipamento eq : equipamentos) {
+                    if (eq.isDisponivel() && !eq.isEmManutencao()) {
+                        equipamentosFiltrados.add(eq);
+                    }
+                }
+                
+                equipamentosDisponiveis = equipamentosFiltrados;
                 atualizarLista();
             }
 
@@ -198,6 +207,12 @@ public class ReservarEquipamentoActivity extends AppCompatActivity {
         // Validações
         if (equipamentoSelecionado == null) {
             showToast("Selecione um equipamento");
+            return;
+        }
+        
+        // Verificar se equipamento está em manutenção
+        if (equipamentoSelecionado.isEmManutencao()) {
+            showToast("Este equipamento está em manutenção e não pode ser reservado");
             return;
         }
 

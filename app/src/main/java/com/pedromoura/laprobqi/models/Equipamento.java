@@ -7,6 +7,7 @@ public class Equipamento implements Serializable {
     private String nome;
     private String descricao;
     private String status; // "DISPONIVEL", "RESERVADO", "EM_USO"
+    private boolean emManutencao; // Bloqueado para manutenção
     private String dataCriacao;
 
     public Equipamento() {
@@ -42,6 +43,9 @@ public class Equipamento implements Serializable {
     public String getDataCriacao() { return dataCriacao; }
     public void setDataCriacao(String dataCriacao) { this.dataCriacao = dataCriacao; }
 
+    public boolean isEmManutencao() { return emManutencao; }
+    public void setEmManutencao(boolean emManutencao) { this.emManutencao = emManutencao; }
+
     // Métodos auxiliares
     public boolean isDisponivel() {
         return "DISPONIVEL".equals(status);
@@ -56,10 +60,13 @@ public class Equipamento implements Serializable {
     }
 
     public String getStatusDisplay() {
+        if (emManutencao) {
+            return "🔧 Em Manutenção";
+        }
         switch (status) {
-            case "DISPONIVEL": return "Disponível";
-            case "RESERVADO": return "Reservado";
-            case "EM_USO": return "Em Uso";
+            case "DISPONIVEL": return "✅ Disponível";
+            case "RESERVADO": return "📅 Reservado";
+            case "EM_USO": return "⚙️ Em Uso";
             default: return "Desconhecido";
         }
     }

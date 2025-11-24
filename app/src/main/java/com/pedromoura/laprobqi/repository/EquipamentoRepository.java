@@ -32,4 +32,7 @@ public interface EquipamentoRepository {
     void buscarEquipamentosPorNome(String nome, OnEquipamentosListener listener);
     void obterEquipamentosDisponiveisPorPeriodo(String data, String horaInicio, String horaFim, OnEquipamentosListener listener);
     void atualizarStatusEquipamento(String equipamentoId, String novoStatus, OnBooleanListener listener);
+    
+    // Funcionalidades de coordenador
+    void bloquearParaManutencao(String equipamentoId, boolean bloquear, OnBooleanListener listener);
 }

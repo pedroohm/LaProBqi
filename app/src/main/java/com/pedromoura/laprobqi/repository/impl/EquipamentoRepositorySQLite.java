@@ -173,6 +173,13 @@ public class EquipamentoRepositorySQLite implements EquipamentoRepository {
         }
     }
     
+    @Override
+    public void bloquearParaManutencao(String equipamentoId, boolean bloquear, OnBooleanListener listener) {
+        // SQLite não suporta esta funcionalidade
+        // Apenas funciona com Firebase
+        listener.onFailure("Funcionalidade disponível apenas com Firebase");
+    }
+    
     private Equipamento criarEquipamentoFromCursor(Cursor cursor) {
         Equipamento equipamento = new Equipamento();
         equipamento.setId(cursor.getString(cursor.getColumnIndexOrThrow(COL_ID)));
