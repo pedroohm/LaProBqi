@@ -19,12 +19,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.pedromoura.laprobqi.R;
 import com.pedromoura.laprobqi.di.RepositoryProvider;
 import com.pedromoura.laprobqi.models.Equipamento;
+import com.pedromoura.laprobqi.models.LogReserva;
 import com.pedromoura.laprobqi.models.Reserva;
 import com.pedromoura.laprobqi.models.Usuario;
 import com.pedromoura.laprobqi.repository.EquipamentoRepository;
 import com.pedromoura.laprobqi.repository.ReservaRepository;
 import com.pedromoura.laprobqi.repository.UsuarioRepository;
+import com.pedromoura.laprobqi.repositories.LogReservaRepository;
+import com.pedromoura.laprobqi.repositories.LogReservaRepositoryFirestore;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -42,6 +46,7 @@ public class ReservarEquipamentoActivity extends AppCompatActivity {
     private EquipamentoRepository equipamentoRepository;
     private ReservaRepository reservaRepository;
     private UsuarioRepository usuarioRepository;
+    private LogReservaRepository logReservaRepository;
     private Usuario usuarioAtual;
     private List<Equipamento> equipamentosDisponiveis;
     private ArrayAdapter<Equipamento> adapter;
@@ -59,6 +64,7 @@ public class ReservarEquipamentoActivity extends AppCompatActivity {
         equipamentoRepository = RepositoryProvider.getInstance(this).getEquipamentoRepository();
         reservaRepository = RepositoryProvider.getInstance(this).getReservaRepository();
         usuarioRepository = RepositoryProvider.getInstance(this).getUsuarioRepository();
+        logReservaRepository = new LogReservaRepositoryFirestore();
 
         // Inicializar views
         inicializarViews();
@@ -293,6 +299,9 @@ public class ReservarEquipamentoActivity extends AppCompatActivity {
         reservaRepository.salvarReserva(reserva, new ReservaRepository.OnReservaListener() {
             @Override
             public void onSuccess(Reserva reservaSalva) {
+                // Criar log da reserva
+                criarLogReserva(reservaSalva);
+                
                 progressBar.setVisibility(View.GONE);
                 showToast("Reserva realizada com sucesso!");
                 finish();
@@ -304,6 +313,45 @@ public class ReservarEquipamentoActivity extends AppCompatActivity {
                 showToast("Erro ao criar reserva: " + mensagem);
             }
         });
+    }
+
+    private void criarLogReserva(Reserva reserva) {
+        try {
+            // Converter strings de data/hora para Date
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+            String dataHoraInicioStr = reserva.getDataReserva() + " " + reserva.getHoraInicio();
+            String dataHoraFimStr = reserva.getDataReserva() + " " + reserva.getHoraFim();
+            
+            Date dataHoraInicio = sdf.parse(dataHoraInicioStr);
+            Date dataHoraFim = sdf.parse(dataHoraFimStr);
+
+            // Criar log
+            LogReserva log = new LogReserva(
+                reserva.getEquipamentoId(),
+                reserva.getEquipamentoNome(),
+                reserva.getUsuarioId(),
+                reserva.getUsuarioNome(),
+                usuarioAtual.getEmail(),
+                dataHoraInicio,
+                dataHoraFim,
+                "ATIVA"
+            );
+
+            // Salvar log
+            logReservaRepository.salvarLog(log, new LogReservaRepository.OnLogSavedListener() {
+                @Override
+                public void onSuccess(String logId) {
+                    // Log criado com sucesso
+                }
+
+                @Override
+                public void onError(String mensagem) {
+                    // Erro ao criar log (não interrompe o fluxo)
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void showToast(String message) {

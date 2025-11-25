@@ -58,6 +58,7 @@ public class ProdutoTabelaAdapter extends RecyclerView.Adapter<ProdutoTabelaAdap
 
     class ProdutoViewHolder extends RecyclerView.ViewHolder {
         private TextView txtNome, txtCodigo, txtQuantidade, txtValidade;
+        private View viewIndicadorCor;
 
         public ProdutoViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -65,6 +66,7 @@ public class ProdutoTabelaAdapter extends RecyclerView.Adapter<ProdutoTabelaAdap
             txtCodigo = itemView.findViewById(R.id.txtProdutoCodigo);
             txtQuantidade = itemView.findViewById(R.id.txtProdutoQuantidade);
             txtValidade = itemView.findViewById(R.id.txtProdutoValidade);
+            viewIndicadorCor = itemView.findViewById(R.id.viewIndicadorCor);
         }
 
         public void bind(Produto produto, int position) {
@@ -77,9 +79,24 @@ public class ProdutoTabelaAdapter extends RecyclerView.Adapter<ProdutoTabelaAdap
                     contentLayout.setBackgroundColor(Color.WHITE);
                 }
             }
+            
+            // Atualizar indicador de cor da categoria
+            if (viewIndicadorCor != null && produto.getHexColor() != null) {
+                try {
+                    viewIndicadorCor.setBackgroundColor(Color.parseColor(produto.getHexColor()));
+                } catch (Exception e) {
+                    viewIndicadorCor.setBackgroundColor(Color.parseColor("#9E9E9E")); // Cinza padrão
+                }
+            }
 
             txtNome.setText(produto.getNome());
-            txtCodigo.setText(String.valueOf(produto.getId()));
+            
+            // Exibir código da categoria ao invés do ID
+            if (produto.getCodigo() != null && !produto.getCodigo().isEmpty()) {
+                txtCodigo.setText(produto.getCodigo());
+            } else {
+                txtCodigo.setText("IND");
+            }
             
             // Formatar quantidade com unidade
             String quantidadeTexto;

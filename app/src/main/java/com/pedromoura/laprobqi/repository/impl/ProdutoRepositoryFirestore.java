@@ -54,10 +54,6 @@ public class ProdutoRepositoryFirestore implements ProdutoRepository {
             listener.onComplete(false, "Nome do produto não pode estar vazio");
             return;
         }
-        if (produto.getTipo() == null || produto.getTipo().trim().isEmpty()) {
-            listener.onComplete(false, "Tipo do produto não pode estar vazio");
-            return;
-        }
         if (produto.getQuantidade() < 0) {
             listener.onComplete(false, "Quantidade não pode ser negativa");
             return;
@@ -239,7 +235,16 @@ public class ProdutoRepositoryFirestore implements ProdutoRepository {
         
         // Nota: Não incluímos o campo 'id', pois o Firestore gera seu próprio ID de documento
         data.put("nome", produto.getNome());
-        data.put("tipo", produto.getTipo());
+        
+        // Campo tipo agora armazena a categoria completa (ex: "Reagentes Controlados")
+        data.put("tipo", produto.getCategoria() != null ? produto.getCategoria() : "Reagentes não classificados/Indefinidos");
+        
+        // Novos campos de categorização
+        data.put("categoria", produto.getCategoria());
+        data.put("codigo", produto.getCodigo());
+        data.put("cor", produto.getCor());
+        data.put("hexColor", produto.getHexColor());
+        
         data.put("quantidade", produto.getQuantidade()); // double -> Number (automático)
         data.put("unidade", produto.getUnidade());
         data.put("observacoes", produto.getObservacoes());
@@ -279,6 +284,12 @@ public class ProdutoRepositoryFirestore implements ProdutoRepository {
         String unidade = document.getString("unidade");
         String observacoes = document.getString("observacoes");
         
+        // Ler campos de categorização
+        String codigo = document.getString("codigo");
+        String categoria = document.getString("categoria");
+        String cor = document.getString("cor");
+        String hexColor = document.getString("hexColor");
+        
         // Quantidade: Number -> double (automático)
         Double quantidade = document.getDouble("quantidade");
         if (quantidade == null) {
@@ -295,7 +306,16 @@ public class ProdutoRepositoryFirestore implements ProdutoRepository {
             validade = (String) validadeObj;
         }
         
-        // Criar e retornar o objeto Produto
-        return new Produto(id, nome, tipo, validade, quantidade, unidade, observacoes);
+        // Criar produto e aplicar categorização
+        Produto produto = new Produto(id, nome, tipo, validade, quantidade, unidade, observacoes);
+        
+        // Aplicar categoria se existir, caso contrário definir como Indefinido
+        if (codigo != null && !codigo.isEmpty()) {
+            produto.setCategoria(codigo);
+        } else {
+            produto.setCategoria("IND"); // Indefinido por padrão
+        }
+        
+        return produto;
     }
 }

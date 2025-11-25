@@ -13,6 +13,14 @@
         android:background="@android:color/white"
         android:weightSum="4">
 
+        <!-- INDICADOR DE COR -->
+        <View
+            android:id="@+id/viewIndicadorCor"
+            android:layout_width="4dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="8dp"
+            android:background="#9E9E9E"/>
+
         <!-- PRODUTO -->
         <TextView
             android:id="@+id/txtProdutoNome"

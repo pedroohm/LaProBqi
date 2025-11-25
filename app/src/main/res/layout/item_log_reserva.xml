@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Cabeçalho com Status -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:id="@+id/txtEquipamentoNome"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Nome do Equipamento"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#333333" />
+
+            <TextView
+                android:id="@+id/txtStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🟢 Ativa"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:padding="4dp" />
+        </LinearLayout>
+
+        <!-- Divisor -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#E0E0E0"
+            android:layout_marginVertical="8dp" />
+
+        <!-- Informações do Usuário -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="4dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="👤 Usuário: "
+                android:textSize="14sp"
+                android:textColor="#666666" />
+
+            <TextView
+                android:id="@+id/txtUsuarioNome"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Nome do Usuário"
+                android:textSize="14sp"
+                android:textColor="#333333"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Email do Usuário -->
+        <TextView
+            android:id="@+id/txtUsuarioEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="email@exemplo.com"
+            android:textSize="12sp"
+            android:textColor="#999999"
+            android:layout_marginBottom="8dp"
+            android:paddingStart="20dp" />
+
+        <!-- Período da Reserva -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="4dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📅 Início: "
+                android:textSize="14sp"
+                android:textColor="#666666" />
+
+            <TextView
+                android:id="@+id/txtDataHoraInicio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="01/01/2024 08:00"
+                android:textSize="14sp"
+                android:textColor="#333333" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="4dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📅 Fim: "
+                android:textSize="14sp"
+                android:textColor="#666666" />
+
+            <TextView
+                android:id="@+id/txtDataHoraFim"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="01/01/2024 10:00"
+                android:textSize="14sp"
+                android:textColor="#333333" />
+        </LinearLayout>
+
+        <!-- Data da Reserva -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="4dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🕐 Reservado em: "
+                android:textSize="12sp"
+                android:textColor="#999999" />
+
+            <TextView
+                android:id="@+id/txtDataHoraReserva"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="31/12/2023 15:30"
+                android:textSize="12sp"
+                android:textColor="#999999" />
+        </LinearLayout>
+
+        <!-- Observação (se houver) -->
+        <TextView
+            android:id="@+id/txtObservacao"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Observação: texto da observação"
+            android:textSize="12sp"
+            android:textColor="#666666"
+            android:textStyle="italic"
+            android:layout_marginTop="4dp"
+            android:visibility="gone" />
+
+        <!-- Informações de Cancelamento (se houver) -->
+        <LinearLayout
+            android:id="@+id/layoutCancelamento"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#FFEBEE"
+            android:padding="8dp"
+            android:layout_marginTop="8dp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cancelamento"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="#C62828"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:id="@+id/txtMotivoCancelamento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Motivo do cancelamento"
+                android:textSize="12sp"
+                android:textColor="#666666" />
+
+            <TextView
+                android:id="@+id/txtDataCancelamento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cancelado em: 01/01/2024 12:00"
+                android:textSize="11sp"
+                android:textColor="#999999"
+                android:layout_marginTop="2dp" />
+        </LinearLayout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

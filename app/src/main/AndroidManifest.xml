@@ -70,6 +70,9 @@
         <activity
             android:name=".activities.ConfigurarDocumentosActivity"
             android:exported="false" />
+        <activity
+            android:name=".activities.HistoricoReservasActivity"
+            android:exported="false" />
     </application>
 
     <queries>

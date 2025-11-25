@@ -50,4 +50,9 @@ public class InitialMenuActivity extends Activity {
         // TODO: Implementar desafios
         Toast.makeText(this, "Sistema de Desafios de atividade física", Toast.LENGTH_SHORT).show();
     }
+    
+    public void clickHistoricoReservas(View view) {
+        Intent intent = new Intent(this, HistoricoReservasActivity.class);
+        startActivity(intent);
+    }
 }

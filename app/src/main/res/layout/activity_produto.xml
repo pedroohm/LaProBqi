@@ -31,16 +31,63 @@
             android:textColorHint="@color/input_hint"
             android:layout_marginBottom="12dp"/>
 
-        <EditText 
-            android:id="@+id/editTipo" 
-            android:hint="Tipo/Categoria*" 
-            android:layout_width="match_parent" 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Categoria do Produto*"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp"/>
+
+        <Spinner
+            android:id="@+id/spinnerCategoria"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/edit_text_background"
             android:padding="12dp"
-            android:textColor="@color/text_primary"
-            android:textColorHint="@color/input_hint"
-            android:layout_marginBottom="12dp"/>
+            android:layout_marginBottom="4dp"/>
+
+        <LinearLayout
+            android:id="@+id/layoutIndicadorCor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="12dp"
+            android:padding="8dp">
+
+            <View
+                android:id="@+id/viewCorIndicador"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="#9E9E9E"/>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="12dp">
+
+                <TextView
+                    android:id="@+id/txtCodigoCor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Código: IND"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:textColor="@color/black"/>
+
+                <TextView
+                    android:id="@+id/txtNomeCor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cor: Cinza"
+                    android:textSize="12sp"
+                    android:textColor="@color/gray"/>
+            </LinearLayout>
+        </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"

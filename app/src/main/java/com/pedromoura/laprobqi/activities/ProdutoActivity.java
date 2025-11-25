@@ -1,9 +1,15 @@
 package com.pedromoura.laprobqi.activities;
 
 import android.app.DatePickerDialog;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,11 +29,15 @@ import java.util.Locale;
 
 public class ProdutoActivity extends AppCompatActivity {
 
-    private EditText editNome, editTipo, editValidade, editQuantidade, editUnidade, editObs;
+    private EditText editNome, editValidade, editQuantidade, editUnidade, editObs;
+    private Spinner spinnerCategoria;
+    private View viewCorIndicador;
+    private TextView txtCodigoCor, txtNomeCor;
     private TextView textLista;
     private ProdutoRepository produtoRepository;
     private Calendar calendar;
     private SimpleDateFormat dateFormatter;
+    private String codigoSelecionado = "IND";
     
     // Formatador para exibir números com vírgula e no máximo 3 casas decimais
     private static final DecimalFormat decimalFormat;
@@ -68,11 +78,14 @@ public class ProdutoActivity extends AppCompatActivity {
 
     private void inicializarActivity() {
         editNome = findViewById(R.id.editNome);
-        editTipo = findViewById(R.id.editTipo);
         editValidade = findViewById(R.id.editValidade);
         editQuantidade = findViewById(R.id.editQuantidade);
         editUnidade = findViewById(R.id.editUnidade);
         editObs = findViewById(R.id.editObs);
+        spinnerCategoria = findViewById(R.id.spinnerCategoria);
+        viewCorIndicador = findViewById(R.id.viewCorIndicador);
+        txtCodigoCor = findViewById(R.id.txtCodigoCor);
+        txtNomeCor = findViewById(R.id.txtNomeCor);
         textLista = findViewById(R.id.textLista);
 
         // Configurar campo de quantidade para aceitar decimais
@@ -83,12 +96,53 @@ public class ProdutoActivity extends AppCompatActivity {
         calendar = Calendar.getInstance();
         dateFormatter = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
+        // Configurar Spinner de categorias
+        configurarSpinnerCategoria();
+
         // Configurar DatePicker para o campo de validade
         editValidade.setOnClickListener(v -> mostrarDatePicker());
 
         findViewById(R.id.btnSalvar).setOnClickListener(view -> salvarProduto());
         findViewById(R.id.btnListar).setOnClickListener(view -> listarProdutos());
         findViewById(R.id.btnLimpar).setOnClickListener(view -> limparCampos());
+    }
+
+    private void configurarSpinnerCategoria() {
+        String[] categorias = Produto.getCategorias();
+        String[] codigos = Produto.getCodigos();
+        
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, 
+            android.R.layout.simple_spinner_item, categorias);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerCategoria.setAdapter(adapter);
+        
+        // Definir "Indefinidos" como padrão (última posição)
+        spinnerCategoria.setSelection(categorias.length - 1);
+        
+        spinnerCategoria.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                codigoSelecionado = codigos[position];
+                atualizarIndicadorCor();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                codigoSelecionado = "IND";
+                atualizarIndicadorCor();
+            }
+        });
+        
+        atualizarIndicadorCor();
+    }
+
+    private void atualizarIndicadorCor() {
+        Produto produtoTemp = new Produto("", "", "", 0, "", "");
+        produtoTemp.setCategoria(codigoSelecionado);
+        
+        viewCorIndicador.setBackgroundColor(Color.parseColor(produtoTemp.getHexColor()));
+        txtCodigoCor.setText("Código: " + produtoTemp.getCodigo());
+        txtNomeCor.setText("Cor: " + produtoTemp.getCor());
     }
 
     private void mostrarDatePicker() {
@@ -112,7 +166,6 @@ public class ProdutoActivity extends AppCompatActivity {
 
     private void salvarProduto() {
         String nome = editNome.getText().toString().trim();
-        String tipo = editTipo.getText().toString().trim();
         String validade = editValidade.getText().toString().trim();
         String quantidadeStr = editQuantidade.getText().toString().trim();
         String unidade = editUnidade.getText().toString().trim();
@@ -122,11 +175,6 @@ public class ProdutoActivity extends AppCompatActivity {
         if (nome.isEmpty()) {
             editNome.setError("Nome é obrigatório");
             editNome.requestFocus();
-            return;
-        }
-        if (tipo.isEmpty()) {
-            editTipo.setError("Tipo é obrigatório");
-            editTipo.requestFocus();
             return;
         }
         if (quantidadeStr.isEmpty()) {
@@ -149,7 +197,16 @@ public class ProdutoActivity extends AppCompatActivity {
                 return;
             }
 
-            Produto p = new Produto(nome, tipo, validade, quantidade, unidade, obs);
+            Produto p = new Produto(nome, "", validade, quantidade, unidade, obs);
+            p.setCategoria(codigoSelecionado); // Definir categoria selecionada
+            
+            // Log para debug
+            Log.d("ProdutoActivity", "Salvando produto: " + nome);
+            Log.d("ProdutoActivity", "Código selecionado: " + codigoSelecionado);
+            Log.d("ProdutoActivity", "Categoria aplicada: " + p.getCategoria());
+            Log.d("ProdutoActivity", "Código do produto: " + p.getCodigo());
+            Log.d("ProdutoActivity", "Cor: " + p.getCor());
+            Log.d("ProdutoActivity", "HexColor: " + p.getHexColor());
             
             produtoRepository.adicionarProduto(p, new ProdutoRepository.OnCompleteListener() {
                 @Override
@@ -180,14 +237,19 @@ public class ProdutoActivity extends AppCompatActivity {
 
                 StringBuilder texto = new StringBuilder();
                 for (Produto p : produtos) {
-                    texto.append("ID: ").append(p.getId()).append("\n");
+                    texto.append("━━━━━━━━━━━━━━━━━━━\n");
                     texto.append("Nome: ").append(p.getNome()).append("\n");
-                    texto.append("Tipo: ").append(p.getTipo()).append("\n");
+                    if (p.getCategoria() != null && !p.getCategoria().isEmpty()) {
+                        texto.append("🏷️ ").append(p.getCategoria()).append(" [").append(p.getCodigo()).append("]\n");
+                        texto.append("🎨 Cor: ").append(p.getCor()).append("\n");
+                    }
                     texto.append("Validade: ").append(p.getValidade()).append("\n");
-                    // Exibir quantidade com formatação brasileira (vírgula, máx 3 decimais)
                     texto.append("Quantidade: ").append(formatarNumero(p.getQuantidade())).append(" ").append(p.getUnidade()).append("\n");
-                    texto.append("Obs: ").append(p.getObservacoes()).append("\n\n");
+                    if (p.getObservacoes() != null && !p.getObservacoes().isEmpty()) {
+                        texto.append("Obs: ").append(p.getObservacoes()).append("\n");
+                    }
                 }
+                texto.append("━━━━━━━━━━━━━━━━━━━\n");
                 textLista.setText(texto.toString());
             }
         });
@@ -195,11 +257,11 @@ public class ProdutoActivity extends AppCompatActivity {
 
     private void limparCampos() {
         editNome.setText("");
-        editTipo.setText("");
         editValidade.setText("");
         editQuantidade.setText("");
         editUnidade.setText("");
         editObs.setText("");
+        spinnerCategoria.setSelection(Produto.getCategorias().length - 1); // Indefinido
         editNome.requestFocus();
     }
 }

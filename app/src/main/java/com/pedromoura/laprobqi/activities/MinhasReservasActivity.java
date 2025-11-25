@@ -15,13 +15,19 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.pedromoura.laprobqi.R;
 import com.pedromoura.laprobqi.di.RepositoryProvider;
+import com.pedromoura.laprobqi.models.LogReserva;
 import com.pedromoura.laprobqi.models.Reserva;
 import com.pedromoura.laprobqi.models.Usuario;
+import com.pedromoura.laprobqi.repositories.LogReservaRepository;
+import com.pedromoura.laprobqi.repositories.LogReservaRepositoryFirestore;
 import com.pedromoura.laprobqi.repository.ReservaRepository;
 import com.pedromoura.laprobqi.repository.UsuarioRepository;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class MinhasReservasActivity extends AppCompatActivity {
 
@@ -31,6 +37,7 @@ public class MinhasReservasActivity extends AppCompatActivity {
     
     private ReservaRepository reservaRepository;
     private UsuarioRepository usuarioRepository;
+    private LogReservaRepository logReservaRepository;
     private Usuario usuarioAtual;
     private List<Reserva> reservas;
     private android.widget.ArrayAdapter<Reserva> adapter;
@@ -43,6 +50,7 @@ public class MinhasReservasActivity extends AppCompatActivity {
         // Inicializar repositories
         reservaRepository = RepositoryProvider.getInstance(this).getReservaRepository();
         usuarioRepository = RepositoryProvider.getInstance(this).getUsuarioRepository();
+        logReservaRepository = new LogReservaRepositoryFirestore();
 
         // Inicializar views
         inicializarViews();
@@ -170,6 +178,11 @@ public class MinhasReservasActivity extends AppCompatActivity {
             .setMessage("Tem certeza que deseja cancelar esta reserva?")
             .setPositiveButton("Sim", (dialog, which) -> {
                 progressBar.setVisibility(View.VISIBLE);
+                
+                // Primeiro, atualizar/criar o log com status cancelado
+                atualizarLogCancelamento(reserva);
+                
+                // Depois cancelar a reserva
                 reservaRepository.cancelarReserva(reserva.getId(), new ReservaRepository.OnBooleanListener() {
                     @Override
                     public void onSuccess(boolean success) {
@@ -191,6 +204,48 @@ public class MinhasReservasActivity extends AppCompatActivity {
             })
             .setNegativeButton("Não", null)
             .show();
+    }
+
+    private void atualizarLogCancelamento(Reserva reserva) {
+        try {
+            // Converter strings de data/hora para Date
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+            String dataHoraInicioStr = reserva.getDataReserva() + " " + reserva.getHoraInicio();
+            String dataHoraFimStr = reserva.getDataReserva() + " " + reserva.getHoraFim();
+            
+            Date dataHoraInicio = sdf.parse(dataHoraInicioStr);
+            Date dataHoraFim = sdf.parse(dataHoraFimStr);
+
+            // Criar log de cancelamento
+            LogReserva log = new LogReserva(
+                reserva.getEquipamentoId(),
+                reserva.getEquipamentoNome(),
+                reserva.getUsuarioId(),
+                reserva.getUsuarioNome(),
+                usuarioAtual != null ? usuarioAtual.getEmail() : "",
+                dataHoraInicio,
+                dataHoraFim,
+                "CANCELADA"
+            );
+            
+            log.setMotivoCancelamento("Cancelada pelo usuário");
+            log.setDataHoraCancelamento(new Date());
+
+            // Salvar log
+            logReservaRepository.salvarLog(log, new LogReservaRepository.OnLogSavedListener() {
+                @Override
+                public void onSuccess(String logId) {
+                    // Log registrado com sucesso
+                }
+
+                @Override
+                public void onError(String mensagem) {
+                    // Continua mesmo com erro no log
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void abrirTelaReservar() {
