@@ -233,6 +233,108 @@ public class UsuarioRepositoryFirebase implements UsuarioRepository {
     }
     
     /**
+     * Envia email de recuperação de senha via Firebase Auth.
+     * 
+     * @param email Email do usuário
+     * @param listener Callback de resultado
+     */
+    @Override
+    public void resetarSenha(String email, UsuarioRepository.OnCompleteListener listener) {
+        // Validação
+        if (email == null || email.trim().isEmpty()) {
+            listener.onComplete(false, "Email não pode estar vazio");
+            return;
+        }
+        
+        // Enviar email de recuperação
+        firebaseAuth.sendPasswordResetEmail(email.trim())
+            .addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Log.d(TAG, "Email de recuperação enviado para: " + email);
+                    listener.onComplete(true, "Email de recuperação enviado. Verifique sua caixa de entrada.");
+                } else {
+                    String errorMessage = "Erro ao enviar email de recuperação";
+                    if (task.getException() != null) {
+                        errorMessage = task.getException().getMessage();
+                    }
+                    Log.e(TAG, "Erro ao enviar email de recuperação", task.getException());
+                    listener.onComplete(false, errorMessage);
+                }
+            });
+    }
+    
+    /**
+     * Atualiza a senha do usuário atual no Firebase Auth.
+     * Requer re-autenticação para garantir segurança.
+     * 
+     * @param senhaAtual Senha atual do usuário (para re-autenticação)
+     * @param novaSenha Nova senha desejada
+     * @param listener Callback de resultado
+     */
+    @Override
+    public void atualizarSenha(String senhaAtual, String novaSenha, UsuarioRepository.OnCompleteListener listener) {
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        
+        if (firebaseUser == null) {
+            listener.onComplete(false, "Usuário não autenticado");
+            return;
+        }
+        
+        // Validações
+        if (senhaAtual == null || senhaAtual.trim().isEmpty()) {
+            listener.onComplete(false, "Senha atual não pode estar vazia");
+            return;
+        }
+        if (novaSenha == null || novaSenha.length() < 6) {
+            listener.onComplete(false, "Nova senha deve ter no mínimo 6 caracteres");
+            return;
+        }
+        if (senhaAtual.equals(novaSenha)) {
+            listener.onComplete(false, "A nova senha deve ser diferente da atual");
+            return;
+        }
+        
+        String email = firebaseUser.getEmail();
+        if (email == null) {
+            listener.onComplete(false, "Email do usuário não encontrado");
+            return;
+        }
+        
+        // 1. Re-autenticar usuário (segurança - Firebase exige isso para operações sensíveis)
+        com.google.firebase.auth.AuthCredential credential = 
+            com.google.firebase.auth.EmailAuthProvider.getCredential(email, senhaAtual);
+        
+        firebaseUser.reauthenticate(credential)
+            .addOnCompleteListener(reAuthTask -> {
+                if (reAuthTask.isSuccessful()) {
+                    // 2. Atualizar senha
+                    firebaseUser.updatePassword(novaSenha)
+                        .addOnCompleteListener(updateTask -> {
+                            if (updateTask.isSuccessful()) {
+                                Log.d(TAG, "Senha atualizada com sucesso");
+                                listener.onComplete(true, "Senha alterada com sucesso");
+                            } else {
+                                String errorMessage = "Erro ao atualizar senha";
+                                if (updateTask.getException() != null) {
+                                    errorMessage = updateTask.getException().getMessage();
+                                }
+                                Log.e(TAG, "Erro ao atualizar senha", updateTask.getException());
+                                listener.onComplete(false, errorMessage);
+                            }
+                        });
+                } else {
+                    // Senha atual incorreta
+                    String errorMessage = "Senha atual incorreta";
+                    if (reAuthTask.getException() != null) {
+                        errorMessage = reAuthTask.getException().getMessage();
+                    }
+                    Log.e(TAG, "Erro na re-autenticação", reAuthTask.getException());
+                    listener.onComplete(false, errorMessage);
+                }
+            });
+    }
+    
+    /**
      * Converte um DocumentSnapshot do Firestore para um objeto Usuario.
      * 
      * @param document DocumentSnapshot do Firestore

@@ -119,4 +119,48 @@ public class UsuarioRepositorySharedPrefs implements UsuarioRepository {
             mainHandler.post(() -> listener.onComplete(true, "Logout realizado com sucesso"));
         });
     }
+
+    @Override
+    public void resetarSenha(String email, OnCompleteListener listener) {
+        // SharedPrefs não suporta envio de email
+        // Esta implementação é apenas para compatibilidade com a interface
+        mainHandler.post(() -> listener.onComplete(false, 
+            "Recuperação de senha não disponível no modo offline. Use Firebase."));
+    }
+
+    @Override
+    public void atualizarSenha(String senhaAtual, String novaSenha, OnCompleteListener listener) {
+        executor.execute(() -> {
+            String userId = prefs.getString(KEY_USER_ID, null);
+            if (userId == null) {
+                mainHandler.post(() -> listener.onComplete(false, "Usuário não autenticado"));
+                return;
+            }
+            
+            // Validar senha atual
+            String senhaArmazenada = prefs.getString(userId + "_password", null);
+            if (senhaArmazenada == null || !senhaArmazenada.equals(senhaAtual)) {
+                mainHandler.post(() -> listener.onComplete(false, "Senha atual incorreta"));
+                return;
+            }
+            
+            // Validar nova senha
+            if (novaSenha == null || novaSenha.length() < 6) {
+                mainHandler.post(() -> listener.onComplete(false, "Nova senha deve ter no mínimo 6 caracteres"));
+                return;
+            }
+            
+            if (senhaAtual.equals(novaSenha)) {
+                mainHandler.post(() -> listener.onComplete(false, "A nova senha deve ser diferente da atual"));
+                return;
+            }
+            
+            // Atualizar senha
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString(userId + "_password", novaSenha);
+            editor.apply();
+            
+            mainHandler.post(() -> listener.onComplete(true, "Senha alterada com sucesso"));
+        });
+    }
 }

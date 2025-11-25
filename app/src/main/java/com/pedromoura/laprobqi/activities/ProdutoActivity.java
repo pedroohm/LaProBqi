@@ -40,31 +40,31 @@ public class ProdutoActivity extends AppCompatActivity {
     private SimpleDateFormat dateFormatter;
     private String codigoSelecionado = "IND";
     
-    // Formatador para exibir números com vírgula e no máximo 3 casas decimais
+    // Formatador para exibir números com ponto e no máximo 3 casas decimais
     private static final DecimalFormat decimalFormat;
     
     static {
-        DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale("pt", "BR"));
-        symbols.setDecimalSeparator(',');
-        symbols.setGroupingSeparator('.');
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.US);
+        symbols.setDecimalSeparator('.');
+        symbols.setGroupingSeparator(',');
         decimalFormat = new DecimalFormat("#,##0.###", symbols);
         decimalFormat.setMaximumFractionDigits(3);
         decimalFormat.setMinimumFractionDigits(0);
     }
     
     /**
-     * Formata um número com vírgula como separador decimal e no máximo 3 casas
+     * Formata um número com ponto como separador decimal e no máximo 3 casas
      */
     private static String formatarNumero(double valor) {
         return decimalFormat.format(valor);
     }
     
     /**
-     * Converte string com vírgula para double
+     * Converte string com ponto para double (formato padrão)
      */
     private static double parseNumero(String texto) throws NumberFormatException {
-        // Substitui vírgula por ponto para fazer o parse
-        String textoNormalizado = texto.trim().replace(',', '.');
+        // Aceita apenas ponto como separador decimal
+        String textoNormalizado = texto.trim();
         return Double.parseDouble(textoNormalizado);
     }
 
@@ -89,9 +89,9 @@ public class ProdutoActivity extends AppCompatActivity {
         txtNomeCor = findViewById(R.id.txtNomeCor);
         textLista = findViewById(R.id.textLista);
 
-        // Configurar campo de quantidade para aceitar decimais
+        // Configurar campo de quantidade para aceitar decimais (use ponto como separador)
         editQuantidade.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-        editQuantidade.setHint("Ex: 10,5 ou 100,25");
+        editQuantidade.setHint("Ex: 10.5 ou 100.25 (use ponto)");
 
         produtoRepository = RepositoryProvider.getInstance(this).getProdutoRepository();
         calendar = Calendar.getInstance();
@@ -229,7 +229,7 @@ public class ProdutoActivity extends AppCompatActivity {
             });
 
         } catch (NumberFormatException e) {
-            editQuantidade.setError("Quantidade inválida (use vírgula para decimais, ex: 10,5)");
+            editQuantidade.setError("Quantidade inválida (use ponto para decimais, ex: 10.5)");
         }
     }
 

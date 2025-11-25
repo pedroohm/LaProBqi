@@ -30,13 +30,13 @@ public class ProdutoAdapter extends RecyclerView.Adapter<ProdutoAdapter.ProdutoV
     private BancoDadosProduto banco;
     private boolean isExitMode; // true = exit mode, false = entry mode
     
-    // Formatador para exibir números com vírgula e no máximo 3 casas decimais
+    // Formatador para exibir números com ponto e no máximo 3 casas decimais
     private static final DecimalFormat decimalFormat;
     
     static {
-        DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale("pt", "BR"));
-        symbols.setDecimalSeparator(',');
-        symbols.setGroupingSeparator('.');
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.US);
+        symbols.setDecimalSeparator('.');
+        symbols.setGroupingSeparator(',');
         decimalFormat = new DecimalFormat("#,##0.###", symbols);
         decimalFormat.setMaximumFractionDigits(3);
         decimalFormat.setMinimumFractionDigits(0);
@@ -50,18 +50,18 @@ public class ProdutoAdapter extends RecyclerView.Adapter<ProdutoAdapter.ProdutoV
     }
     
     /**
-     * Formata um número com vírgula como separador decimal e no máximo 3 casas
+     * Formata um número com ponto como separador decimal e no máximo 3 casas
      */
     private static String formatarNumero(double valor) {
         return decimalFormat.format(valor);
     }
     
     /**
-     * Converte string com vírgula para double
+     * Converte string com ponto para double (formato padrão)
      */
     private static double parseNumero(String texto) throws NumberFormatException {
-        // Substitui vírgula por ponto para fazer o parse
-        String textoNormalizado = texto.trim().replace(',', '.');
+        // Aceita apenas ponto como separador decimal
+        String textoNormalizado = texto.trim();
         return Double.parseDouble(textoNormalizado);
     }
 
@@ -179,7 +179,7 @@ public class ProdutoAdapter extends RecyclerView.Adapter<ProdutoAdapter.ProdutoV
             
             String acao = adicionar ? "Adicionar" : "Remover";
             txtTitulo.setText(acao + " quantidade - " + produto.getNome());
-            editQuantidade.setHint("Quantidade a " + acao.toLowerCase() + " (use vírgula)");
+            editQuantidade.setHint("Quantidade a " + acao.toLowerCase() + " (use ponto, ex: 10.5)");
 
             new AlertDialog.Builder(context)
                 .setView(dialogView)
@@ -208,13 +208,13 @@ public class ProdutoAdapter extends RecyclerView.Adapter<ProdutoAdapter.ProdutoV
                         banco.atualizarProduto(produto);
                         notifyItemChanged(getAdapterPosition());
                         
-                        // Exibir mensagem com formatação brasileira (vírgula)
+                        // Exibir mensagem com formatação (ponto como separador decimal)
                         String mensagem = acao + " " + formatarNumero(quantidade) + " " + produto.getUnidade() + 
                                         " de " + produto.getNome() + ". Novo total: " + formatarNumero(novaQuantidade) + " " + produto.getUnidade();
                         Toast.makeText(context, mensagem, Toast.LENGTH_LONG).show();
                         
                     } catch (NumberFormatException e) {
-                        Toast.makeText(context, "Digite uma quantidade válida (use vírgula para decimais)", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Digite uma quantidade válida (use ponto para decimais, ex: 10.5)", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .setNegativeButton("Cancelar", null)
@@ -224,7 +224,7 @@ public class ProdutoAdapter extends RecyclerView.Adapter<ProdutoAdapter.ProdutoV
         public void bind(Produto produto) {
             txtNome.setText("Nome: " + produto.getNome());
             txtTipo.setText("Tipo: " + produto.getTipo());
-            // Exibir quantidade com formatação brasileira (vírgula, máx 3 decimais)
+            // Exibir quantidade com formatação (ponto como separador decimal, máx 3 decimais)
             txtQuantidade.setText("Quantidade: " + formatarNumero(produto.getQuantidade()) + " " + produto.getUnidade());
             txtValidade.setText("Validade: " + produto.getValidade());
             txtObservacoes.setText("Obs: " + produto.getObservacoes());

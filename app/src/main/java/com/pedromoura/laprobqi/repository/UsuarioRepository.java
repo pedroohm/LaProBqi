@@ -7,6 +7,8 @@ public interface UsuarioRepository {
     void autenticar(String email, String senha, OnAuthListener listener);
     void obterUsuarioAtual(OnSuccessListener<Usuario> listener);
     void logout(OnCompleteListener listener);
+    void resetarSenha(String email, OnCompleteListener listener);
+    void atualizarSenha(String senhaAtual, String novaSenha, OnCompleteListener listener);
 
     interface OnCompleteListener {
         void onComplete(boolean sucesso, String mensagem);

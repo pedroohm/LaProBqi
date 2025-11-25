@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:text="📊 Exportar Inventário (CSV)"
             android:textColor="@color/white"
-            android:backgroundTint="@color/status_disponivel"
+            android:backgroundTint="@color/moustard_gold"
             android:layout_marginTop="30dp"
             android:padding="16dp"
             android:textSize="16sp"

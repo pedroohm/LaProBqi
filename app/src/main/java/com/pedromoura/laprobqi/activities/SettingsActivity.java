@@ -7,7 +7,10 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -132,8 +135,66 @@ public class SettingsActivity extends Activity {
     }
 
     public void clickChangePassword(View view) {
-        // TODO: Implementar mudança de senha
-        Toast.makeText(this, "Funcionalidade de mudança de senha em desenvolvimento", Toast.LENGTH_SHORT).show();
+        // Criar campos de entrada
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(50, 40, 50, 10);
+        
+        final EditText inputSenhaAtual = new EditText(this);
+        inputSenhaAtual.setHint("Senha atual");
+        inputSenhaAtual.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        inputSenhaAtual.setPadding(20, 20, 20, 20);
+        
+        final EditText inputNovaSenha = new EditText(this);
+        inputNovaSenha.setHint("Nova senha (m\u00ednimo 6 caracteres)");
+        inputNovaSenha.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        inputNovaSenha.setPadding(20, 20, 20, 20);
+        
+        final EditText inputConfirmarSenha = new EditText(this);
+        inputConfirmarSenha.setHint("Confirme a nova senha");
+        inputConfirmarSenha.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        inputConfirmarSenha.setPadding(20, 20, 20, 20);
+        
+        layout.addView(inputSenhaAtual);
+        layout.addView(inputNovaSenha);
+        layout.addView(inputConfirmarSenha);
+        
+        new AlertDialog.Builder(this)
+            .setTitle("Alterar Senha")
+            .setMessage("Digite sua senha atual e a nova senha que deseja usar.")
+            .setView(layout)
+            .setPositiveButton("Alterar", (dialog, which) -> {
+                String senhaAtual = inputSenhaAtual.getText().toString().trim();
+                String novaSenha = inputNovaSenha.getText().toString().trim();
+                String confirmarSenha = inputConfirmarSenha.getText().toString().trim();
+                
+                // Valida\u00e7\u00f5es
+                if (senhaAtual.isEmpty() || novaSenha.isEmpty() || confirmarSenha.isEmpty()) {
+                    Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                
+                if (novaSenha.length() < 6) {
+                    Toast.makeText(this, "A nova senha deve ter no m\u00ednimo 6 caracteres", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                
+                if (!novaSenha.equals(confirmarSenha)) {
+                    Toast.makeText(this, "As senhas n\u00e3o coincidem", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                
+                // Chamar reposit\u00f3rio para atualizar senha
+                usuarioRepository.atualizarSenha(senhaAtual, novaSenha, (sucesso, mensagem) -> {
+                    if (sucesso) {
+                        Toast.makeText(this, "\u2713 " + mensagem, Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(this, "\u2717 " + mensagem, Toast.LENGTH_LONG).show();
+                    }
+                });
+            })
+            .setNegativeButton("Cancelar", null)
+            .show();
     }
 
     public void clickLogout(View view) {

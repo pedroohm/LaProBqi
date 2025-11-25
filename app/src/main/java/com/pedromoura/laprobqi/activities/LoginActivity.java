@@ -11,6 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.pedromoura.laprobqi.R;
@@ -22,7 +23,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText editEmail, editPassword;
     private ImageView btnTogglePassword;
     private Button btnLogin;
-    private TextView textRegister;
+    private TextView textRegister, textForgotPassword;
     private ProgressBar progressBar;
     private UsuarioRepository usuarioRepository;
     private boolean isPasswordVisible = false;
@@ -41,11 +42,13 @@ public class LoginActivity extends AppCompatActivity {
         btnTogglePassword = findViewById(R.id.btnTogglePassword);
         btnLogin = findViewById(R.id.btnEntrar);
         textRegister = findViewById(R.id.btnCadastrar);
+        textForgotPassword = findViewById(R.id.forgotPassword);
         progressBar = findViewById(R.id.progress_bar);
 
         btnLogin.setOnClickListener(v -> fazerLogin());
         textRegister.setOnClickListener(v -> abrirTelaCadastro());
         btnTogglePassword.setOnClickListener(v -> togglePasswordVisibility());
+        textForgotPassword.setOnClickListener(v -> mostrarDialogoRecuperacaoSenha());
 
         // Verificar se já está logado
         verificarSessao();
@@ -116,6 +119,51 @@ public class LoginActivity extends AppCompatActivity {
     private void abrirTelaCadastro() {
         Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
+    }
+
+    private void mostrarDialogoRecuperacaoSenha() {
+        // Criar EditText para email
+        final EditText emailInput = new EditText(this);
+        emailInput.setHint("Digite seu e-mail");
+        emailInput.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        emailInput.setPadding(50, 30, 50, 30);
+        
+        // Pré-preencher com email já digitado (se houver)
+        String emailPreenchido = editEmail.getText().toString().trim();
+        if (!emailPreenchido.isEmpty()) {
+            emailInput.setText(emailPreenchido);
+            emailInput.setSelection(emailPreenchido.length());
+        }
+
+        new AlertDialog.Builder(this)
+            .setTitle("Recuperar Senha")
+            .setMessage("Digite seu e-mail para receber as instruções de recuperação de senha.")
+            .setView(emailInput)
+            .setPositiveButton("Enviar", (dialog, which) -> {
+                String email = emailInput.getText().toString().trim();
+                
+                if (email.isEmpty()) {
+                    showToast("Digite um e-mail válido");
+                    return;
+                }
+                
+                progressBar.setVisibility(View.VISIBLE);
+                
+                usuarioRepository.resetarSenha(email, new UsuarioRepository.OnCompleteListener() {
+                    @Override
+                    public void onComplete(boolean sucesso, String mensagem) {
+                        progressBar.setVisibility(View.GONE);
+                        
+                        if (sucesso) {
+                            showToast("✓ Email enviado! Verifique sua caixa de entrada.");
+                        } else {
+                            showToast("✗ " + mensagem);
+                        }
+                    }
+                });
+            })
+            .setNegativeButton("Cancelar", null)
+            .show();
     }
 
     private void showToast(String message) {
