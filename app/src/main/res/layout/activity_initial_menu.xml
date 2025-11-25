@@ -80,6 +80,7 @@
         android:text="@string/project_management"
         android:textColor="@color/white"
         android:backgroundTint="@color/moustard_gold"
+        android:enabled="false"
         />
     <Button
         android:layout_width="155sp"
@@ -102,6 +103,7 @@
         android:textColor="@color/white"
         android:backgroundTint="@color/moustard_gold"
         android:onClick="clickPoints"
+        android:enabled="false"
         />
     <Button
         android:layout_width="155sp"
@@ -124,6 +126,21 @@
         android:textColor="@color/white"
         android:backgroundTint="@color/moustard_gold"
         android:onClick="clickChallenge"
+        android:enabled="false"
+        />
+    
+    <!-- Botão visível apenas para coordenadores -->
+    <Button
+        android:id="@+id/btnRelatorioPresencas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnChallenge"
+        android:layout_marginTop="16dp"
+        android:text="📊 Relatório de Presenças"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/red_brown"
+        android:onClick="clickRelatorioPresencas"
+        android:visibility="gone"
         />
 
 

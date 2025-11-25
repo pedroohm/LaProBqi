@@ -73,6 +73,23 @@
         <activity
             android:name=".activities.HistoricoReservasActivity"
             android:exported="false" />
+        <activity
+            android:name=".activities.CheckInOutActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.RelatorioPresencasActivity"
+            android:exported="false" />
+        
+        <!-- FileProvider para compartilhamento de arquivos CSV -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 
     <queries>

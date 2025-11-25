@@ -4,16 +4,38 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.pedromoura.laprobqi.R;
+import com.pedromoura.laprobqi.di.RepositoryProvider;
+import com.pedromoura.laprobqi.repository.UsuarioRepository;
 
 public class InitialMenuActivity extends Activity {
+
+    private UsuarioRepository usuarioRepository;
+    private Button btnRelatorioPresencas;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_initial_menu);
+        
+        usuarioRepository = RepositoryProvider.getInstance(this).getUsuarioRepository();
+        btnRelatorioPresencas = findViewById(R.id.btnRelatorioPresencas);
+        
+        carregarUsuarioAtual();
+    }
+    
+    private void carregarUsuarioAtual() {
+        usuarioRepository.obterUsuarioAtual(usuario -> {
+            if (usuario != null && usuario.isCoordenador()) {
+                // Mostrar botão de relatório apenas para coordenadores
+                btnRelatorioPresencas.setVisibility(View.VISIBLE);
+            } else {
+                btnRelatorioPresencas.setVisibility(View.GONE);
+            }
+        });
     }
 
     public void clickWarehouse(View view) {
@@ -27,8 +49,8 @@ public class InitialMenuActivity extends Activity {
     }
 
     public void clickCheckInOut(View view) {
-        // TODO: Implementar funcionalidade de check-in/check-out
-        Toast.makeText(this, "Funcionalidade de Check-in/Check-out em desenvolvimento", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, CheckInOutActivity.class);
+        startActivity(intent);
     }
 
     public void clickPopsAndGuides(View view) {
@@ -53,6 +75,11 @@ public class InitialMenuActivity extends Activity {
     
     public void clickHistoricoReservas(View view) {
         Intent intent = new Intent(this, HistoricoReservasActivity.class);
+        startActivity(intent);
+    }
+    
+    public void clickRelatorioPresencas(View view) {
+        Intent intent = new Intent(this, RelatorioPresencasActivity.class);
         startActivity(intent);
     }
 }

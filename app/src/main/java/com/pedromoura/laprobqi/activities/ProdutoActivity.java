@@ -1,6 +1,7 @@
 package com.pedromoura.laprobqi.activities;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputType;
@@ -105,6 +106,12 @@ public class ProdutoActivity extends AppCompatActivity {
         findViewById(R.id.btnSalvar).setOnClickListener(view -> salvarProduto());
         findViewById(R.id.btnListar).setOnClickListener(view -> listarProdutos());
         findViewById(R.id.btnLimpar).setOnClickListener(view -> limparCampos());
+        
+        // Config button
+        findViewById(R.id.btnConfig).setOnClickListener(v -> {
+            Intent intent = new Intent(ProdutoActivity.this, SettingsActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void configurarSpinnerCategoria() {

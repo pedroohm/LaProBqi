@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <!-- Header -->
+    <LinearLayout
+        android:id="@+id/headerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="16dp">
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/logo"
+            android:contentDescription="Logo" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="CONTROLE DE PRESENÇA"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/red_brown"
+            android:gravity="center"
+            android:layout_marginStart="16dp"/>
+
+        <ImageView
+            android:id="@+id/btnConfig"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/config"
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="Configurações"/>
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Status Card -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="4dp"
+                xmlns:app="http://schemas.android.com/apk/res-auto">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="SEU STATUS ATUAL"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/red_brown"
+                        android:layout_marginBottom="12dp"/>
+
+                    <TextView
+                        android:id="@+id/txtStatus"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="❌ Você não está no laboratório"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary"
+                        android:gravity="center"
+                        android:padding="12dp"
+                        android:background="@drawable/card_background"/>
+
+                    <TextView
+                        android:id="@+id/txtDetalhes"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textSize="14sp"
+                        android:textColor="@color/gray"
+                        android:gravity="center"
+                        android:layout_marginTop="8dp"
+                        android:visibility="gone"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Botão Check-In -->
+            <Button
+                android:id="@+id/btnCheckIn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="✅ FAZER CHECK-IN"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/moustard_gold"
+                android:padding="16dp"
+                android:layout_marginBottom="12dp"/>
+
+            <!-- Botão Check-Out -->
+            <Button
+                android:id="@+id/btnCheckOut"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="🚪 FAZER CHECK-OUT"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/red_brown"
+                android:padding="16dp"
+                android:enabled="false"
+                android:layout_marginBottom="24dp"/>
+
+            <!-- Histórico -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="HISTÓRICO DE PRESENÇA"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/red_brown"
+                android:layout_marginBottom="12dp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerHistorico"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView
+                android:id="@+id/txtEmptyHistorico"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="📋 Nenhum registro de presença ainda"
+                android:textSize="14sp"
+                android:textColor="@color/gray"
+                android:gravity="center"
+                android:padding="24dp"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

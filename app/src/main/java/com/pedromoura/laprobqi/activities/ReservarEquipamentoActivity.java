@@ -2,6 +2,7 @@ package com.pedromoura.laprobqi.activities;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -95,6 +96,12 @@ public class ReservarEquipamentoActivity extends AppCompatActivity {
         btnSelecionarHoraInicio.setOnClickListener(v -> mostrarTimePicker(true));
         btnSelecionarHoraFim.setOnClickListener(v -> mostrarTimePicker(false));
         btnReservar.setOnClickListener(v -> fazerReserva());
+        
+        // Config button
+        findViewById(R.id.btnConfig).setOnClickListener(v -> {
+            Intent intent = new Intent(ReservarEquipamentoActivity.this, SettingsActivity.class);
+            startActivity(intent);
+        });
         
         listViewEquipamentos.setOnItemClickListener(this::onEquipamentoClick);
     }

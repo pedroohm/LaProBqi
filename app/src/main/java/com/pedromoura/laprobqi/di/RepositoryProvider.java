@@ -3,12 +3,14 @@ package com.pedromoura.laprobqi.di;
 import android.content.Context;
 
 import com.pedromoura.laprobqi.repository.EquipamentoRepository;
+import com.pedromoura.laprobqi.repository.PresencaLabRepository;
 import com.pedromoura.laprobqi.repository.ProdutoRepository;
 import com.pedromoura.laprobqi.repository.RegistroUsoRepository;
 import com.pedromoura.laprobqi.repository.ReservaRepository;
 import com.pedromoura.laprobqi.repository.UsuarioRepository;
 import com.pedromoura.laprobqi.repository.impl.EquipamentoRepositoryFirestore;
 import com.pedromoura.laprobqi.repository.impl.EquipamentoRepositorySQLite;
+import com.pedromoura.laprobqi.repository.impl.PresencaLabRepositoryFirestore;
 import com.pedromoura.laprobqi.repository.impl.ProdutoRepositoryFirestore;
 import com.pedromoura.laprobqi.repository.impl.ProdutoRepositorySQLite;
 import com.pedromoura.laprobqi.repository.impl.RegistroUsoRepositoryFirestore;
@@ -46,6 +48,7 @@ public class RepositoryProvider {
     private EquipamentoRepository equipamentoRepository;
     private ReservaRepository reservaRepository;
     private RegistroUsoRepository registroUsoRepository;
+    private PresencaLabRepository presencaLabRepository;
 
     private RepositoryProvider(Context context) {
         this.context = context.getApplicationContext();
@@ -64,6 +67,7 @@ public class RepositoryProvider {
                 this.equipamentoRepository = new EquipamentoRepositoryFirestore();
                 this.reservaRepository = new ReservaRepositoryFirestore();
                 this.registroUsoRepository = new RegistroUsoRepositoryFirestore();
+                this.presencaLabRepository = new PresencaLabRepositoryFirestore();
                 break;
                 
             case HYBRID:
@@ -73,6 +77,7 @@ public class RepositoryProvider {
                 this.equipamentoRepository = new EquipamentoRepositoryFirestore();
                 this.reservaRepository = new ReservaRepositoryFirestore();
                 this.registroUsoRepository = new RegistroUsoRepositoryFirestore();
+                this.presencaLabRepository = new PresencaLabRepositoryFirestore();
                 break;
                 
             case SQLITE:
@@ -151,5 +156,9 @@ public class RepositoryProvider {
 
     public RegistroUsoRepository getRegistroUsoRepository() {
         return registroUsoRepository;
+    }
+
+    public PresencaLabRepository getPresencaLabRepository() {
+        return presencaLabRepository;
     }
 }

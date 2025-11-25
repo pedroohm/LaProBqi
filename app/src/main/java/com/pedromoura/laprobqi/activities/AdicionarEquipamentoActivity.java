@@ -1,5 +1,6 @@
 package com.pedromoura.laprobqi.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -62,6 +63,12 @@ public class AdicionarEquipamentoActivity extends AppCompatActivity {
         // Configurar listeners
         btnSalvar.setOnClickListener(v -> salvarEquipamento());
         btnCancelar.setOnClickListener(v -> finish());
+        
+        // Config button
+        findViewById(R.id.btnConfig).setOnClickListener(v -> {
+            Intent intent = new Intent(AdicionarEquipamentoActivity.this, SettingsActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void salvarEquipamento() {
