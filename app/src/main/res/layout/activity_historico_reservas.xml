@@ -11,10 +11,10 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
+        android:background="@color/red_brown"
         android:elevation="4dp"
         app:title="Histórico de Reservas"
-        app:titleTextColor="@android:color/white"
+        app:titleTextColor="@android:color/white" />
         app:navigationIcon="@drawable/ic_arrow_back" />
 
     <!-- Filtros -->

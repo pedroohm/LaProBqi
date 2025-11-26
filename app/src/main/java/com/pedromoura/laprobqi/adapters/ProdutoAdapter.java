@@ -14,9 +14,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.pedromoura.laprobqi.BancoDadosProduto;
 import com.pedromoura.laprobqi.Produto;
 import com.pedromoura.laprobqi.R;
+import com.pedromoura.laprobqi.di.RepositoryProvider;
+import com.pedromoura.laprobqi.repository.ProdutoRepository;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -27,7 +28,7 @@ public class ProdutoAdapter extends RecyclerView.Adapter<ProdutoAdapter.ProdutoV
 
     private List<Produto> produtos;
     private Context context;
-    private BancoDadosProduto banco;
+    private ProdutoRepository produtoRepository;
     private boolean isExitMode; // true = exit mode, false = entry mode
     
     // Formatador para exibir números com ponto e no máximo 3 casas decimais
@@ -45,7 +46,7 @@ public class ProdutoAdapter extends RecyclerView.Adapter<ProdutoAdapter.ProdutoV
     public ProdutoAdapter(List<Produto> produtos, Context context, boolean isExitMode) {
         this.produtos = produtos;
         this.context = context;
-        this.banco = BancoDadosProduto.getInstancia(context);
+        this.produtoRepository = RepositoryProvider.getInstance(context).getProdutoRepository();
         this.isExitMode = isExitMode;
     }
     
@@ -143,10 +144,18 @@ public class ProdutoAdapter extends RecyclerView.Adapter<ProdutoAdapter.ProdutoV
                     .setTitle("Confirmar exclusão")
                     .setMessage("Deseja realmente excluir o produto '" + produto.getNome() + "'?")
                     .setPositiveButton("Sim", (dialog, which) -> {
-                        banco.deletarProduto(produto.getId());
-                        produtos.remove(position);
-                        notifyItemRemoved(position);
-                        Toast.makeText(context, "Produto excluído: " + produto.getNome(), Toast.LENGTH_SHORT).show();
+                        produtoRepository.removerProduto(produto.getId(), new ProdutoRepository.OnCompleteListener() {
+                            @Override
+                            public void onComplete(boolean sucesso, String mensagem) {
+                                if (sucesso) {
+                                    produtos.remove(position);
+                                    notifyItemRemoved(position);
+                                    Toast.makeText(context, "Produto excluído: " + produto.getNome(), Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(context, "Erro ao excluir: " + mensagem, Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
                     })
                     .setNegativeButton("Não", null)
                     .show();
@@ -205,13 +214,25 @@ public class ProdutoAdapter extends RecyclerView.Adapter<ProdutoAdapter.ProdutoV
                         }
                         
                         produto.setQuantidade(novaQuantidade);
-                        banco.atualizarProduto(produto);
-                        notifyItemChanged(getAdapterPosition());
                         
-                        // Exibir mensagem com formatação (ponto como separador decimal)
-                        String mensagem = acao + " " + formatarNumero(quantidade) + " " + produto.getUnidade() + 
-                                        " de " + produto.getNome() + ". Novo total: " + formatarNumero(novaQuantidade) + " " + produto.getUnidade();
-                        Toast.makeText(context, mensagem, Toast.LENGTH_LONG).show();
+                        // Atualizar no Firebase via Repository
+                        produtoRepository.atualizarProduto(produto, new ProdutoRepository.OnCompleteListener() {
+                            @Override
+                            public void onComplete(boolean sucesso, String mensagem) {
+                                if (sucesso) {
+                                    notifyItemChanged(getAdapterPosition());
+                                    // Exibir mensagem com formatação (ponto como separador decimal)
+                                    String msg = acao + " " + formatarNumero(quantidade) + " " + produto.getUnidade() + 
+                                                " de " + produto.getNome() + ". Novo total: " + formatarNumero(novaQuantidade) + " " + produto.getUnidade();
+                                    Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
+                                } else {
+                                    Toast.makeText(context, "Erro ao atualizar: " + mensagem, Toast.LENGTH_SHORT).show();
+                                    // Reverter mudança local em caso de erro
+                                    produto.setQuantidade(adicionar ? novaQuantidade - quantidade : novaQuantidade + quantidade);
+                                    notifyItemChanged(getAdapterPosition());
+                                }
+                            }
+                        });
                         
                     } catch (NumberFormatException e) {
                         Toast.makeText(context, "Digite uma quantidade válida (use ponto para decimais, ex: 10.5)", Toast.LENGTH_SHORT).show();

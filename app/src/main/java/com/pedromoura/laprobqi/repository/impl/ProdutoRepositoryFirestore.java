@@ -111,8 +111,13 @@ public class ProdutoRepositoryFirestore implements ProdutoRepository {
      */
     @Override
     public void atualizarProduto(Produto produto, OnCompleteListener listener) {
-        if (produto == null || produto.getId() <= 0) {
+        // Validações básicas
+        if (produto == null) {
             listener.onComplete(false, "Produto inválido para atualização");
+            return;
+        }
+        if (produto.getNome() == null || produto.getNome().trim().isEmpty()) {
+            listener.onComplete(false, "Nome do produto não pode estar vazio");
             return;
         }
         

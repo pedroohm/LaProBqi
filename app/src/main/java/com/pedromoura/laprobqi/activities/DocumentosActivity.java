@@ -4,13 +4,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.pedromoura.laprobqi.R;
@@ -27,8 +26,8 @@ public class DocumentosActivity extends AppCompatActivity {
     private TextView textInstrucoes;
     private TextView textUltimaAtualizacao;
     private TextView textAtualizadoPor;
-    private MaterialButton btnAbrirPasta;
-    private ImageView btnConfigurar;
+    private Button btnAbrirPasta;
+    private Button btnConfigurar;
     private View layoutVazio;
     private ConfiguracaoDocumentos configuracaoAtual;
 
@@ -53,8 +52,12 @@ public class DocumentosActivity extends AppCompatActivity {
         btnConfigurar = findViewById(R.id.btnConfigurar);
         layoutVazio = findViewById(R.id.layoutVazio);
         
-        ImageView btnVoltar = findViewById(R.id.btnVoltar);
-        btnVoltar.setOnClickListener(v -> finish());
+        // Configurar botão de configurações no header
+        ImageView configLogo = findViewById(R.id.configLogo);
+        configLogo.setOnClickListener(v -> {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void configurarListeners() {

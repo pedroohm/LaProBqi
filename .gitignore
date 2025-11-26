@@ -13,4 +13,11 @@
 .externalNativeBuild
 .cxx
 local.properties
+/texto
 *.md
+*.py
+
+# Firebase credentials (NEVER COMMIT!)
+serviceAccountKey.json
+*-firebase-adminsdk-*.json
+
