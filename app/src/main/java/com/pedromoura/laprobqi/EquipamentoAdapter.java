@@ -54,6 +54,7 @@ public class EquipamentoAdapter extends BaseAdapter {
         
         Equipamento equipamento = equipamentos.get(position);
         holder.textNome.setText(equipamento.getNome());
+        holder.textNome.setTextColor(android.graphics.Color.BLACK); // Forçar cor preta para o nome
         holder.textDescricao.setText(equipamento.getDescricao() + " - " + equipamento.getStatusDisplay());
         
         // Mudar cor do texto baseado no status

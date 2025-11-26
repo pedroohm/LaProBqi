@@ -55,11 +55,17 @@ public class ReservarEquipamentoActivity extends AppCompatActivity {
     private Calendar calendar;
     private SimpleDateFormat dateFormat;
     private SimpleDateFormat timeFormat;
+    private String preSelectedEquipamentoId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reservar_equipamento);
+
+        // Verificar se há um equipamento pré-selecionado
+        if (getIntent().hasExtra("equipamento_id")) {
+            preSelectedEquipamentoId = getIntent().getStringExtra("equipamento_id");
+        }
 
         // Inicializar repositories
         equipamentoRepository = RepositoryProvider.getInstance(this).getEquipamentoRepository();
@@ -134,6 +140,17 @@ public class ReservarEquipamentoActivity extends AppCompatActivity {
                 }
                 
                 equipamentosDisponiveis = equipamentosFiltrados;
+                
+                // Verificar pré-seleção
+                if (preSelectedEquipamentoId != null) {
+                    for (Equipamento eq : equipamentosDisponiveis) {
+                        if (eq.getId().equals(preSelectedEquipamentoId)) {
+                            equipamentoSelecionado = eq;
+                            break;
+                        }
+                    }
+                }
+                
                 atualizarLista();
             }
 
@@ -158,7 +175,16 @@ public class ReservarEquipamentoActivity extends AppCompatActivity {
                     android.widget.TextView text2 = view.findViewById(android.R.id.text2);
                     
                     text1.setText(equipamento.getNome());
+                    text1.setTextColor(android.graphics.Color.BLACK); // Nome em preto
                     text2.setText(equipamento.getDescricao());
+                    
+                    // Marcador de seleção
+                    if (equipamentoSelecionado != null && equipamento.getId() != null && equipamento.getId().equals(equipamentoSelecionado.getId())) {
+                        view.setBackgroundColor(android.graphics.Color.LTGRAY);
+                        text1.setText("✓ " + equipamento.getNome()); // Adiciona marcador visual no texto
+                    } else {
+                        view.setBackgroundColor(android.graphics.Color.TRANSPARENT);
+                    }
                     
                     return view;
                 }
@@ -171,6 +197,9 @@ public class ReservarEquipamentoActivity extends AppCompatActivity {
     private void onEquipamentoClick(AdapterView<?> parent, View view, int position, long id) {
         equipamentoSelecionado = (Equipamento) parent.getItemAtPosition(position);
         showToast("Equipamento selecionado: " + equipamentoSelecionado.getNome());
+        if (adapter != null) {
+            adapter.notifyDataSetChanged(); // Atualiza a lista para mostrar o marcador
+        }
     }
 
     private void mostrarDatePicker() {

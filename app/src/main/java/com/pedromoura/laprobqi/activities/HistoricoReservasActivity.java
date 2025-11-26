@@ -41,7 +41,7 @@ public class HistoricoReservasActivity extends AppCompatActivity {
     private RecyclerView recyclerLogs;
     private View layoutEmpty;
 
-    private LogReservaRepository logRepository;
+    // private LogReservaRepository logRepository; // Removido
     private UsuarioRepository usuarioRepository;
     private ReservaRepository reservaRepository;
     private LogReservaAdapter adapter;
@@ -61,11 +61,11 @@ public class HistoricoReservasActivity extends AppCompatActivity {
         carregarUsuario();
         configurarFiltros();
         configurarRecyclerView();
-        migrarReservasExistentes();
+        // migrarReservasExistentes(); // Removido
     }
 
     private void inicializarRepositorios() {
-        logRepository = new LogReservaRepositoryFirestore();
+        // logRepository = new LogReservaRepositoryFirestore(); // Removido
         usuarioRepository = new UsuarioRepositoryFirebase();
         reservaRepository = RepositoryProvider.getInstance(this).getReservaRepository();
     }
@@ -134,21 +134,58 @@ public class HistoricoReservasActivity extends AppCompatActivity {
     }
 
     private void carregarLogs() {
-        logRepository.buscarTodosLogs(new LogReservaRepository.OnLogsLoadedListener() {
+        reservaRepository.obterTodasReservas(new ReservaRepository.OnReservasListener() {
             @Override
-            public void onSuccess(List<LogReserva> logs) {
-                todosLogs = logs;
+            public void onSuccess(List<Reserva> reservas) {
+                todosLogs.clear();
+                for (Reserva reserva : reservas) {
+                    todosLogs.add(converterReservaParaLog(reserva));
+                }
                 aplicarFiltros();
             }
 
             @Override
-            public void onError(String mensagem) {
+            public void onFailure(String mensagem) {
                 Toast.makeText(HistoricoReservasActivity.this,
-                        "Erro ao carregar logs: " + mensagem,
+                        "Erro ao carregar reservas: " + mensagem,
                         Toast.LENGTH_SHORT).show();
                 atualizarVisibilidadeEmpty();
             }
         });
+    }
+
+    private LogReserva converterReservaParaLog(Reserva reserva) {
+        try {
+            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm", java.util.Locale.getDefault());
+            String dataHoraInicioStr = reserva.getDataReserva() + " " + reserva.getHoraInicio();
+            String dataHoraFimStr = reserva.getDataReserva() + " " + reserva.getHoraFim();
+
+            java.util.Date dataHoraInicio = sdf.parse(dataHoraInicioStr);
+            java.util.Date dataHoraFim = sdf.parse(dataHoraFimStr);
+
+            // Determinar status baseado na data atual se não tiver status definido
+            String status = "ATIVA"; // Default
+            // Se a reserva tiver status, use-o. Se não, calcule.
+            // Assumindo que Reserva não tem getStatus() exposto ou confiável, calculamos:
+            java.util.Date agora = new java.util.Date();
+            if (dataHoraFim != null && dataHoraFim.before(agora)) {
+                status = "CONCLUIDA";
+            }
+
+            return new LogReserva(
+                    reserva.getEquipamentoId(),
+                    reserva.getEquipamentoNome(),
+                    reserva.getUsuarioId(),
+                    reserva.getUsuarioNome(),
+                    "", // Email não disponível na reserva
+                    dataHoraInicio,
+                    dataHoraFim,
+                    status
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private void aplicarFiltros() {
@@ -203,72 +240,6 @@ public class HistoricoReservasActivity extends AppCompatActivity {
         } else {
             recyclerLogs.setVisibility(View.VISIBLE);
             layoutEmpty.setVisibility(View.GONE);
-        }
-    }
-
-    private void migrarReservasExistentes() {
-        // Buscar todas as reservas ativas no Firebase
-        reservaRepository.obterTodasReservas(new ReservaRepository.OnReservasListener() {
-            @Override
-            public void onSuccess(List<Reserva> reservas) {
-                // Para cada reserva, verificar se já existe log
-                for (Reserva reserva : reservas) {
-                    criarLogSeNaoExistir(reserva);
-                }
-            }
-
-            @Override
-            public void onFailure(String mensagem) {
-                // Ignora erros de migração
-            }
-        });
-    }
-
-    private void criarLogSeNaoExistir(Reserva reserva) {
-        try {
-            // Converter strings de data/hora para Date
-            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm", java.util.Locale.getDefault());
-            String dataHoraInicioStr = reserva.getDataReserva() + " " + reserva.getHoraInicio();
-            String dataHoraFimStr = reserva.getDataReserva() + " " + reserva.getHoraFim();
-            
-            java.util.Date dataHoraInicio = sdf.parse(dataHoraInicioStr);
-            java.util.Date dataHoraFim = sdf.parse(dataHoraFimStr);
-
-            // Determinar status baseado na data atual
-            java.util.Date agora = new java.util.Date();
-            String status;
-            if (dataHoraFim.before(agora)) {
-                status = "CONCLUIDA";
-            } else {
-                status = "ATIVA";
-            }
-
-            // Criar log
-            LogReserva log = new LogReserva(
-                reserva.getEquipamentoId(),
-                reserva.getEquipamentoNome(),
-                reserva.getUsuarioId(),
-                reserva.getUsuarioNome(),
-                "", // Email não disponível na reserva antiga
-                dataHoraInicio,
-                dataHoraFim,
-                status
-            );
-
-            // Salvar log (se já existir, Firebase ignorará ou substituirá)
-            logRepository.salvarLog(log, new LogReservaRepository.OnLogSavedListener() {
-                @Override
-                public void onSuccess(String logId) {
-                    // Log criado com sucesso
-                }
-
-                @Override
-                public void onError(String mensagem) {
-                    // Ignora erros
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 }
