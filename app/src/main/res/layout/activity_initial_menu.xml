@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
@@ -44,6 +45,7 @@
         android:layout_gravity="left|center_vertical"
         android:textColor="@color/white"
         android:backgroundTint="@color/moustard_gold"
+        app:cornerRadius="100dp"
         android:text="@string/check_in_out"
         android:onClick="clickCheckInOut"
         />
@@ -57,6 +59,7 @@
         android:text="@string/pops_and_guides"
         android:textColor="@color/white"
         android:backgroundTint="@color/moustard_gold"
+        app:cornerRadius="100dp"
         android:onClick="clickPopsAndGuides"
         />
 
@@ -69,6 +72,7 @@
         android:text="@string/warehouse"
         android:textColor="@color/white"
         android:backgroundTint="@color/moustard_gold"
+        app:cornerRadius="100dp"
         android:onClick="clickWarehouse"
         />
     <Button
@@ -80,6 +84,7 @@
         android:text="@string/project_management"
         android:textColor="@color/white"
         android:backgroundTint="@color/moustard_gold"
+        app:cornerRadius="100dp"
         android:enabled="false"
         />
     <Button
@@ -91,6 +96,7 @@
         android:text="@string/schedule_equip"
         android:textColor="@color/white"
         android:backgroundTint="@color/moustard_gold"
+        app:cornerRadius="100dp"
         android:onClick="clickScheduleEquip"
         />
     <Button
@@ -102,6 +108,7 @@
         android:text="@string/poinst"
         android:textColor="@color/white"
         android:backgroundTint="@color/moustard_gold"
+        app:cornerRadius="100dp"
         android:onClick="clickPoints"
         android:enabled="false"
         />
@@ -114,6 +121,7 @@
         android:text="@string/use_equipment_logs"
         android:textColor="@color/white"
         android:backgroundTint="@color/moustard_gold"
+        app:cornerRadius="100dp"
         android:onClick="clickHistoricoReservas"
         />
     <Button
@@ -125,6 +133,7 @@
         android:text="@string/challenge"
         android:textColor="@color/white"
         android:backgroundTint="@color/moustard_gold"
+        app:cornerRadius="100dp"
         android:onClick="clickChallenge"
         android:enabled="false"
         />
@@ -139,6 +148,7 @@
         android:text="📊 Relatório de Presenças"
         android:textColor="@color/white"
         android:backgroundTint="@color/red_brown"
+        app:cornerRadius="100dp"
         android:onClick="clickRelatorioPresencas"
         android:visibility="gone"
         />
