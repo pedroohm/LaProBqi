@@ -1,6 +1,9 @@
 package com.pedromoura.laprobqi.activities;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -9,10 +12,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
+import com.google.android.gms.tasks.CancellationTokenSource;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.pedromoura.laprobqi.R;
@@ -33,6 +44,11 @@ import java.util.Locale;
 public class CheckInOutActivity extends AppCompatActivity {
     
     private static final String TAG = "CheckInOutActivity";
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
+    
+    private static final double LAB_LATITUDE = -20.761104530047522;
+    private static final double LAB_LONGITUDE = -42.86504495256774;
+    private static final double RAIO_PERMITIDO_METROS = 50.0;
     
     private TextView txtStatus, txtDetalhes, txtEmptyHistorico;
     private Button btnCheckIn, btnCheckOut;
@@ -47,6 +63,7 @@ public class CheckInOutActivity extends AppCompatActivity {
     private FirebaseUser currentUser;
     private Usuario usuario;
     private PresencaLab presencaAtiva;
+    private FusedLocationProviderClient fusedLocationClient;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +92,7 @@ public class CheckInOutActivity extends AppCompatActivity {
         presencaRepository = new PresencaLabRepositoryFirestore();
         usuarioRepository = new UsuarioRepositoryFirebase();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
     }
     
     private void configurarListeners() {
@@ -148,32 +166,12 @@ public class CheckInOutActivity extends AppCompatActivity {
             return;
         }
         
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
-        Date now = new Date();
+        if (!verificarPermissoesLocalizacao()) {
+            solicitarPermissoesLocalizacao();
+            return;
+        }
         
-        String data = dateFormat.format(now);
-        String hora = timeFormat.format(now);
-        
-        PresencaLab presenca = new PresencaLab(
-            currentUser.getUid(),
-            usuario.getNome(),
-            usuario.getEmail(),
-            data,
-            hora
-        );
-        
-        btnCheckIn.setEnabled(false);
-        presencaRepository.registrarEntrada(presenca, (sucesso, mensagem) -> {
-            if (sucesso) {
-                Toast.makeText(CheckInOutActivity.this, "✅ Check-in realizado!", Toast.LENGTH_SHORT).show();
-                verificarPresencaAtiva();
-                carregarHistorico();
-            } else {
-                Toast.makeText(CheckInOutActivity.this, mensagem, Toast.LENGTH_LONG).show();
-                btnCheckIn.setEnabled(true);
-            }
-        });
+        verificarLocalizacao();
     }
     
     private void realizarCheckOut() {
@@ -206,10 +204,9 @@ public class CheckInOutActivity extends AppCompatActivity {
     private void carregarHistorico() {
         if (currentUser == null) return;
         
-        // Buscar últimos 30 dias
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         Date now = new Date();
-        Date inicio = new Date(now.getTime() - (30L * 24 * 60 * 60 * 1000)); // 30 dias atrás
+        Date inicio = new Date(now.getTime() - (30L * 24 * 60 * 60 * 1000));
         
         String dataInicio = dateFormat.format(inicio);
         String dataFim = dateFormat.format(now);
@@ -217,7 +214,6 @@ public class CheckInOutActivity extends AppCompatActivity {
         presencaRepository.listarPresencasPorPeriodo(dataInicio, dataFim, new PresencaLabRepository.OnListPresencasListener() {
             @Override
             public void onSuccess(List<PresencaLab> todasPresencas) {
-                // Filtrar apenas as presenças do usuário atual
                 List<PresencaLab> minhasPresencas = new ArrayList<>();
                 for (PresencaLab p : todasPresencas) {
                     if (p.getUsuarioId().equals(currentUser.getUid())) {
@@ -256,5 +252,129 @@ public class CheckInOutActivity extends AppCompatActivity {
             Log.e(TAG, "Erro ao formatar data", e);
         }
         return data;
+    }
+    
+    private boolean verificarPermissoesLocalizacao() {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) 
+                == PackageManager.PERMISSION_GRANTED;
+    }
+    
+    private void solicitarPermissoesLocalizacao() {
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                             Manifest.permission.ACCESS_COARSE_LOCATION},
+                LOCATION_PERMISSION_REQUEST_CODE);
+    }
+    
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, 
+                                          @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                realizarCheckIn();
+            } else {
+                Toast.makeText(this, "Permissão de localização necessária para registrar presença", 
+                              Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+    
+    private void verificarLocalizacao() {
+        if (!verificarPermissoesLocalizacao()) {
+            Toast.makeText(this, "Permissão de localização não concedida", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        btnCheckIn.setEnabled(false);
+        Toast.makeText(this, "Verificando localização...", Toast.LENGTH_SHORT).show();
+        
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        
+        try {
+            fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, 
+                    cancellationTokenSource.getToken())
+                .addOnSuccessListener(this, location -> {
+                    if (location != null) {
+                        double distancia = calcularDistancia(location.getLatitude(), 
+                                                            location.getLongitude());
+                        Log.d(TAG, "Distância do laboratório: " + distancia + " metros");
+                        
+                        if (distancia <= RAIO_PERMITIDO_METROS) {
+                            processarCheckIn();
+                        } else {
+                            Toast.makeText(CheckInOutActivity.this, 
+                                    String.format("❌ Você precisa estar no laboratório para registrar presença.\n" +
+                                                "Distância: %.0f metros (máximo: %.0f metros)",
+                                                distancia, RAIO_PERMITIDO_METROS),
+                                    Toast.LENGTH_LONG).show();
+                            btnCheckIn.setEnabled(true);
+                        }
+                    } else {
+                        Toast.makeText(CheckInOutActivity.this, 
+                                "Não foi possível obter sua localização. Tente novamente.", 
+                                Toast.LENGTH_LONG).show();
+                        btnCheckIn.setEnabled(true);
+                    }
+                })
+                .addOnFailureListener(this, e -> {
+                    Log.e(TAG, "Erro ao obter localização", e);
+                    Toast.makeText(CheckInOutActivity.this, 
+                            "Erro ao verificar localização: " + e.getMessage(), 
+                            Toast.LENGTH_LONG).show();
+                    btnCheckIn.setEnabled(true);
+                });
+        } catch (SecurityException e) {
+            Log.e(TAG, "Erro de permissão ao acessar localização", e);
+            Toast.makeText(this, "Erro de permissão de localização", Toast.LENGTH_SHORT).show();
+            btnCheckIn.setEnabled(true);
+        }
+    }
+    
+    private double calcularDistancia(double lat1, double lon1) {
+        double lat2 = LAB_LATITUDE;
+        double lon2 = LAB_LONGITUDE;
+        
+        final int RAIO_TERRA_METROS = 6371000;
+        
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+        
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                   Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                   Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        
+        return RAIO_TERRA_METROS * c;
+    }
+    
+    private void processarCheckIn() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        Date now = new Date();
+        
+        String data = dateFormat.format(now);
+        String hora = timeFormat.format(now);
+        
+        PresencaLab presenca = new PresencaLab(
+            currentUser.getUid(),
+            usuario.getNome(),
+            usuario.getEmail(),
+            data,
+            hora
+        );
+        
+        presencaRepository.registrarEntrada(presenca, (sucesso, mensagem) -> {
+            if (sucesso) {
+                Toast.makeText(CheckInOutActivity.this, "✅ Check-in realizado!", Toast.LENGTH_SHORT).show();
+                verificarPresencaAtiva();
+                carregarHistorico();
+            } else {
+                Toast.makeText(CheckInOutActivity.this, mensagem, Toast.LENGTH_LONG).show();
+                btnCheckIn.setEnabled(true);
+            }
+        });
     }
 }

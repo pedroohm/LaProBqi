@@ -138,7 +138,7 @@
         android:enabled="false"
         />
     
-    <!-- Botão visível apenas para coordenadores -->
+    <!-- Botões visíveis apenas para coordenadores -->
     <Button
         android:id="@+id/btnRelatorioPresencas"
         android:layout_width="match_parent"
@@ -150,6 +150,20 @@
         android:backgroundTint="@color/red_brown"
         app:cornerRadius="100dp"
         android:onClick="clickRelatorioPresencas"
+        android:visibility="gone"
+        />
+    
+    <Button
+        android:id="@+id/btnAprovarSolicitacoes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnRelatorioPresencas"
+        android:layout_marginTop="8dp"
+        android:text="✅ Aprovar Coordenadores"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/red_brown"
+        app:cornerRadius="100dp"
+        android:onClick="clickAprovarSolicitacoes"
         android:visibility="gone"
         />
 

@@ -1,41 +1,129 @@
-// Regras de segurança do Firestore para POPs e Manuais
-// Cole estas regras no Firebase Console > Firestore Database > Rules
-
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // Regra para a collection configuracoes/documentos
-    match /configuracoes/documentos {
-      // Permitir leitura para qualquer usuário autenticado
+    // Função auxiliar: verifica se é coordenador
+    function isCoordinator() {
+      return request.auth != null && 
+             get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.nivelAcesso == 'COORDENADOR';
+    }
+    
+    // Coleção usuarios
+    match /usuarios/{userId} {
+      // Usuário pode ler apenas seu próprio documento
+      allow read: if request.auth != null && request.auth.uid == userId;
+      
+      // Usuário pode criar seu próprio documento no registro
+      allow create: if request.auth != null && request.auth.uid == userId;
+      
+      // Usuário NÃO pode alterar o nivelAcesso
+      allow update: if request.auth != null && 
+                       request.auth.uid == userId &&
+                       request.resource.data.nivelAcesso == resource.data.nivelAcesso;
+      
+      // Ninguém pode deletar usuários
+      allow delete: if false;
+    }
+    
+    // Coleção equipamentos
+    match /equipamentos/{equipamentoId} {
+      // Todos autenticados podem ler
       allow read: if request.auth != null;
       
-      // Permitir escrita apenas para usuários autenticados
-      // TODO: Adicionar verificação de tipo de usuário (coordenador)
+      // Apenas coordenadores podem criar/editar/deletar
+      allow create, update, delete: if isCoordinator();
+    }
+    
+    // Coleção produtos
+    match /produtos/{produtoId} {
+      // Todos autenticados podem ler e escrever
+      allow read, write: if request.auth != null;
+    }
+    
+    // Coleção reservas
+    match /reservas/{reservaId} {
+      // Todos podem ler (para verificar disponibilidade)
+      allow read: if request.auth != null;
+      
+      // Usuário pode criar reservas com seu próprio usuarioId
+      allow create: if request.auth != null && 
+                       request.resource.data.usuarioId == request.auth.uid;
+      
+      // Usuário pode editar apenas suas reservas OU coordenador pode editar qualquer uma
+      allow update: if request.auth != null && 
+                       (resource.data.usuarioId == request.auth.uid || isCoordinator());
+      
+      // Apenas coordenadores podem deletar
+      allow delete: if isCoordinator();
+    }
+    
+    // Coleção registros_uso
+    match /registros_uso/{registroId} {
+      // Usuário pode ler apenas seus registros OU coordenador pode ler todos
+      allow read: if request.auth != null && 
+                     (resource.data.usuarioId == request.auth.uid || isCoordinator());
+      
+      // Usuário pode criar registros com seu próprio usuarioId
+      allow create: if request.auth != null && 
+                       request.resource.data.usuarioId == request.auth.uid;
+      
+      // Usuário pode atualizar apenas seus registros (finalizar uso)
+      allow update: if request.auth != null && 
+                       resource.data.usuarioId == request.auth.uid;
+      
+      // Apenas coordenadores podem deletar
+      allow delete: if isCoordinator();
+    }
+    
+    match /configuracoes/documentos {
+      allow read: if request.auth != null;
       allow write: if request.auth != null;
     }
     
-    // MANTER AS REGRAS EXISTENTES DE OUTRAS COLLECTIONS:
-    
-    // Produtos
-    match /produtos/{document=**} {
-      allow read, write: if request.auth != null;
-    }
-    
-    // Usuários
-    match /usuarios/{userId} {
+    match /logs_reservas/{logId} {
+      // Usuários autenticados podem ler
       allow read: if request.auth != null;
-      allow write: if request.auth.uid == userId || request.auth != null;
+      
+      // Usuários autenticados podem criar logs
+      allow create: if request.auth != null;
+      
+      // Apenas coordenadores podem atualizar/deletar
+      allow update, delete: if isCoordinator();
     }
     
-    // Equipamentos
-    match /equipamentos/{document=**} {
-      allow read, write: if request.auth != null;
+    match /presencas_lab/{presencaId} {
+      // Anyone authenticated can read all attendance records
+      allow read: if request.auth != null;
+
+      // Anyone authenticated can create attendance (check-in)
+      allow create: if request.auth != null 
+        && request.resource.data.usuarioId == request.auth.uid;
+
+      // Users can update their own attendance (check-out)
+      // Coordinators can update any attendance
+      allow update: if request.auth != null && (
+        resource.data.usuarioId == request.auth.uid ||
+        isCoordinator()
+      );
+
+      // Only coordinators can delete attendance records
+      allow delete: if isCoordinator();
     }
     
-    // Reservas
-    match /reservas/{document=**} {
-      allow read, write: if request.auth != null;
+    // Coleção solicitacoes_coordenador
+    match /solicitacoes_coordenador/{solicitacaoId} {
+      // Todos autenticados podem ler (para verificar se email já foi solicitado)
+      allow read: if request.auth != null;
+      
+      // Qualquer autenticado pode criar solicitação
+      allow create: if request.auth != null;
+      
+      // Apenas coordenadores podem atualizar (aprovar/rejeitar)
+      allow update: if isCoordinator();
+      
+      // Apenas coordenadores podem deletar
+      allow delete: if isCoordinator();
     }
   }
 }

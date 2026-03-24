@@ -15,6 +15,7 @@ public class InitialMenuActivity extends Activity {
 
     private UsuarioRepository usuarioRepository;
     private Button btnRelatorioPresencas;
+    private Button btnAprovarSolicitacoes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +24,7 @@ public class InitialMenuActivity extends Activity {
         
         usuarioRepository = RepositoryProvider.getInstance(this).getUsuarioRepository();
         btnRelatorioPresencas = findViewById(R.id.btnRelatorioPresencas);
+        btnAprovarSolicitacoes = findViewById(R.id.btnAprovarSolicitacoes);
         
         carregarUsuarioAtual();
     }
@@ -30,10 +32,12 @@ public class InitialMenuActivity extends Activity {
     private void carregarUsuarioAtual() {
         usuarioRepository.obterUsuarioAtual(usuario -> {
             if (usuario != null && usuario.isCoordenador()) {
-                // Mostrar botão de relatório apenas para coordenadores
+                // Mostrar botões apenas para coordenadores
                 btnRelatorioPresencas.setVisibility(View.VISIBLE);
+                btnAprovarSolicitacoes.setVisibility(View.VISIBLE);
             } else {
                 btnRelatorioPresencas.setVisibility(View.GONE);
+                btnAprovarSolicitacoes.setVisibility(View.GONE);
             }
         });
     }
@@ -80,6 +84,11 @@ public class InitialMenuActivity extends Activity {
     
     public void clickRelatorioPresencas(View view) {
         Intent intent = new Intent(this, RelatorioPresencasActivity.class);
+        startActivity(intent);
+    }
+    
+    public void clickAprovarSolicitacoes(View view) {
+        Intent intent = new Intent(this, AprovarSolicitacoesActivity.class);
         startActivity(intent);
     }
 }

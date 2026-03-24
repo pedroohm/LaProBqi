@@ -40,8 +40,8 @@ import java.util.Locale;
 public class ReservarEquipamentoActivity extends AppCompatActivity {
 
     private ListView listViewEquipamentos;
-    private EditText editTextData, editTextHoraInicio, editTextHoraFim;
-    private Button btnSelecionarData, btnSelecionarHoraInicio, btnSelecionarHoraFim, btnReservar;
+    private EditText editTextData, editTextDataFim, editTextHoraInicio, editTextHoraFim;
+    private Button btnSelecionarData, btnSelecionarDataFim, btnSelecionarHoraInicio, btnSelecionarHoraFim, btnReservar;
     private ProgressBar progressBar;
     
     private EquipamentoRepository equipamentoRepository;
@@ -89,16 +89,19 @@ public class ReservarEquipamentoActivity extends AppCompatActivity {
     private void inicializarViews() {
         listViewEquipamentos = findViewById(R.id.listViewEquipamentos);
         editTextData = findViewById(R.id.editTextData);
+        editTextDataFim = findViewById(R.id.editTextDataFim);
         editTextHoraInicio = findViewById(R.id.editTextHoraInicio);
         editTextHoraFim = findViewById(R.id.editTextHoraFim);
         btnSelecionarData = findViewById(R.id.btnSelecionarData);
+        btnSelecionarDataFim = findViewById(R.id.btnSelecionarDataFim);
         btnSelecionarHoraInicio = findViewById(R.id.btnSelecionarHoraInicio);
         btnSelecionarHoraFim = findViewById(R.id.btnSelecionarHoraFim);
         btnReservar = findViewById(R.id.btnReservar);
         progressBar = findViewById(R.id.progressBar);
 
         // Configurar listeners
-        btnSelecionarData.setOnClickListener(v -> mostrarDatePicker());
+        btnSelecionarData.setOnClickListener(v -> mostrarDatePicker(true));
+        btnSelecionarDataFim.setOnClickListener(v -> mostrarDatePicker(false));
         btnSelecionarHoraInicio.setOnClickListener(v -> mostrarTimePicker(true));
         btnSelecionarHoraFim.setOnClickListener(v -> mostrarTimePicker(false));
         btnReservar.setOnClickListener(v -> fazerReserva());
@@ -202,7 +205,7 @@ public class ReservarEquipamentoActivity extends AppCompatActivity {
         }
     }
 
-    private void mostrarDatePicker() {
+    private void mostrarDatePicker(boolean isDataInicio) {
         DatePickerDialog datePickerDialog = new DatePickerDialog(this,
             new DatePickerDialog.OnDateSetListener() {
                 @Override
@@ -210,7 +213,15 @@ public class ReservarEquipamentoActivity extends AppCompatActivity {
                     calendar.set(Calendar.YEAR, year);
                     calendar.set(Calendar.MONTH, month);
                     calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                    editTextData.setText(dateFormat.format(calendar.getTime()));
+                    
+                    String dataFormatada = dateFormat.format(calendar.getTime());
+                    if (isDataInicio) {
+                        editTextData.setText(dataFormatada);
+                        // Automaticamente definir data fim igual à data de início
+                        editTextDataFim.setText(dataFormatada);
+                    } else {
+                        editTextDataFim.setText(dataFormatada);
+                    }
                 }
             },
             calendar.get(Calendar.YEAR),
@@ -219,7 +230,25 @@ public class ReservarEquipamentoActivity extends AppCompatActivity {
         );
         
         // Não permitir datas passadas
-        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+        if (isDataInicio) {
+            datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+        } else {
+            // Para data fim, a data mínima é a data de início
+            try {
+                String dataInicioStr = editTextData.getText().toString();
+                if (!dataInicioStr.isEmpty()) {
+                    Date dataInicio = dateFormat.parse(dataInicioStr);
+                    if (dataInicio != null) {
+                        datePickerDialog.getDatePicker().setMinDate(dataInicio.getTime());
+                    }
+                } else {
+                    datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+                }
+            } catch (ParseException e) {
+                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+            }
+        }
+        
         datePickerDialog.show();
     }
 
@@ -259,11 +288,17 @@ public class ReservarEquipamentoActivity extends AppCompatActivity {
         }
 
         String data = editTextData.getText().toString().trim();
+        String dataFim = editTextDataFim.getText().toString().trim();
         String horaInicio = editTextHoraInicio.getText().toString().trim();
         String horaFim = editTextHoraFim.getText().toString().trim();
 
         if (data.isEmpty()) {
-            showToast("Selecione uma data");
+            showToast("Selecione uma data de início");
+            return;
+        }
+        
+        if (dataFim.isEmpty()) {
+            showToast("Selecione uma data de fim");
             return;
         }
 
@@ -276,14 +311,33 @@ public class ReservarEquipamentoActivity extends AppCompatActivity {
             showToast("Selecione a hora de fim");
             return;
         }
-
-        // Validar se hora fim é maior que hora início
+        
+        // Validar se data fim é maior ou igual à data de início
         try {
-            Date inicio = timeFormat.parse(horaInicio);
-            Date fim = timeFormat.parse(horaFim);
-            if (fim.before(inicio) || fim.equals(inicio)) {
-                showToast("Hora de fim deve ser maior que hora de início");
+            Date dataInicioDate = dateFormat.parse(data);
+            Date dataFimDate = dateFormat.parse(dataFim);
+            if (dataFimDate.before(dataInicioDate)) {
+                showToast("Data de fim deve ser igual ou posterior à data de início");
                 return;
+            }
+        } catch (Exception e) {
+            showToast("Erro ao validar datas");
+            return;
+        }
+
+        // Validar se hora fim é maior que hora início (quando for o mesmo dia) (quando for o mesmo dia)
+        try {
+            Date dataInicioDate = dateFormat.parse(data);
+            Date dataFimDate = dateFormat.parse(dataFim);
+            
+            // Só valida horário se for o mesmo dia
+            if (dataInicioDate.equals(dataFimDate)) {
+                Date inicio = timeFormat.parse(horaInicio);
+                Date fim = timeFormat.parse(horaFim);
+                if (fim.before(inicio) || fim.equals(inicio)) {
+                    showToast("Hora de fim deve ser maior que hora de início");
+                    return;
+                }
             }
         } catch (Exception e) {
             showToast("Erro ao validar horários");
@@ -319,6 +373,7 @@ public class ReservarEquipamentoActivity extends AppCompatActivity {
 
     private void criarReserva() {
         String data = editTextData.getText().toString().trim();
+        String dataFim = editTextDataFim.getText().toString().trim();
         String horaInicio = editTextHoraInicio.getText().toString().trim();
         String horaFim = editTextHoraFim.getText().toString().trim();
 
@@ -331,6 +386,9 @@ public class ReservarEquipamentoActivity extends AppCompatActivity {
             horaInicio,
             horaFim
         );
+        
+        // Adicionar data fim
+        reserva.setDataFim(dataFim);
 
         reservaRepository.salvarReserva(reserva, new ReservaRepository.OnReservaListener() {
             @Override

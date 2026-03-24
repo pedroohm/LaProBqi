@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/editMotivo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Informe o motivo da rejeição"
+        android:minLines="3"
+        android:gravity="top"
+        android:background="@drawable/edit_text_background"
+        android:padding="12dp"
+        android:textColor="@color/text_primary"
+        android:textColorHint="@color/input_hint" />
+
+</LinearLayout>
